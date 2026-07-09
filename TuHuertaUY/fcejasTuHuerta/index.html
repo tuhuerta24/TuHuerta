@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Tu Huerta — Panel de administración</title>
+<link rel="icon" href="../assets/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="brand" aria-label="Tu Huerta — volver al sitio">
+      <img class="brand-logo-img" src="../assets/logo.png" alt="Tu Huerta" width="160" height="126">
+    </a>
+    <p class="admin-title">Panel de administración</p>
+    <a class="btn-primary btn-small" href="../index.html">Ver el sitio</a>
+  </div>
+</header>
+
+<main id="panel" class="admin-panel">
+
+  <section class="admin-intro">
+    <h1>Productos y precios</h1>
+    <p id="dataSourceNote" class="data-source-note"></p>
+    <p>
+      Acá podés cambiar precios, agregar o quitar productos. Los cambios se guardan
+      en <strong>este navegador</strong> y se ven al instante en el sitio (en este mismo dispositivo).
+    </p>
+    <p class="admin-warning">
+      <strong>Importante:</strong> esta página no tiene contraseña, solo una dirección
+      difícil de adivinar — no la compartas ni la enlaces desde el sitio público.
+      Además, como el sitio no tiene servidor propio, estos cambios
+      <u>no se publican solos para todas las personas que visiten la página</u>. Para que
+      el cambio quede fijo para todo el mundo, usá el botón <em>«Copiar código para publicar»</em>
+      y pegá ese texto donde te indique la persona que mantiene el sitio.
+    </p>
+    <div class="admin-actions">
+      <button id="addProductBtn" class="btn-secondary" type="button">+ Agregar producto</button>
+      <button id="saveBtn" class="btn-primary" type="button">Guardar cambios</button>
+      <button id="exportBtn" class="btn-secondary" type="button">Copiar código para publicar</button>
+      <button id="resetBtn" class="btn-text" type="button">Restablecer valores originales</button>
+    </div>
+    <p id="statusMsg" class="status-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th scope="col">Categoría</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Unidad</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Descripción</th>
+          <th scope="col">Emoji</th>
+          <th scope="col">Imagen (ruta)</th>
+          <th scope="col"><span class="visually-hidden">Eliminar</span></th>
+        </tr>
+      </thead>
+      <tbody id="productsBody"></tbody>
+    </table>
+  </section>
+
+  <dialog id="exportDialog" class="export-dialog">
+    <h2>Código para publicar</h2>
+    <p>Copiá este texto y pegalo reemplazando el bloque <code>DEFAULT_PRODUCTS</code> en <code>products-data.js</code>.</p>
+    <textarea id="exportText" readonly></textarea>
+    <div class="export-dialog-actions">
+      <button id="copyExportBtn" class="btn-primary" type="button">Copiar al portapapeles</button>
+      <button id="closeExportBtn" class="btn-text" type="button">Cerrar</button>
+    </div>
+  </dialog>
+
+</main>
+
+<script src="../products-data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
