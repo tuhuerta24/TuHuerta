@@ -1,0 +1,99 @@
+/* Panel de administración — se apoya en las variables y estilos de style.css */
+
+.admin-body { background: var(--gray); }
+
+.admin-title {
+  color: var(--white); font-weight: 300; font-size: 1.05rem;
+  margin-left: 6px; margin-right: auto;
+}
+
+/* ---------- Portón de acceso ---------- */
+.admin-gate {
+  min-height: calc(100vh - 74px);
+  display: grid; place-items: center;
+  padding: 40px 20px;
+}
+.gate-card {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 34px 30px; max-width: 380px; width: 100%; text-align: center;
+}
+.gate-card h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+.gate-card p { color: var(--text-soft); font-size: .92rem; margin-bottom: 18px; }
+#gateForm input {
+  width: 100%; padding: 12px 14px; margin-bottom: 12px;
+  border: 1.5px solid #D0D0D0; border-radius: 10px;
+  font: inherit; text-align: center; letter-spacing: .3em;
+}
+#gateForm input:focus { border-color: var(--green); }
+.gate-error { color: var(--orange-dark); font-weight: 600; font-size: .88rem; margin-top: 10px; }
+.gate-note {
+  margin-top: 20px; font-size: .78rem; color: var(--text-soft);
+  background: var(--gray); border-radius: 10px; padding: 12px; text-align: left;
+}
+
+/* ---------- Panel ---------- */
+.admin-panel { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+.admin-intro h1 { font-size: 1.6rem; font-weight: 300; margin-bottom: 10px; }
+.admin-intro > p { color: var(--text-soft); max-width: 720px; margin-bottom: 10px; }
+.admin-warning {
+  background: #FBEDE7; border: 1px solid #F0C7B3; border-radius: 10px;
+  padding: 12px 16px; font-size: .88rem; max-width: 720px;
+}
+
+.admin-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 6px; }
+.btn-secondary {
+  background: var(--white); color: var(--green); border: 1.5px solid var(--green);
+  border-radius: 999px; padding: 12px 20px; font: inherit; font-weight: 700;
+  cursor: pointer; min-height: 44px;
+}
+.btn-secondary:hover { background: var(--green-soft); }
+.btn-text {
+  background: none; border: none; color: var(--text-soft); text-decoration: underline;
+  font: inherit; cursor: pointer; padding: 12px 6px; min-height: 44px;
+}
+.btn-text:hover { color: var(--orange-dark); }
+.status-msg { min-height: 1.4em; color: var(--green-dark); font-weight: 600; font-size: .92rem; }
+
+/* ---------- Tabla ---------- */
+.admin-table-wrap {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+  overflow-x: auto; padding: 6px;
+}
+.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+.admin-table th {
+  text-align: left; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--text-soft); padding: 10px 8px; border-bottom: 2px solid var(--gray);
+}
+.admin-table td { padding: 6px 8px; border-bottom: 1px solid #EFEFEF; vertical-align: middle; }
+.admin-table input, .admin-table select {
+  width: 100%; min-width: 90px; padding: 8px 10px;
+  border: 1.5px solid #D9D9D9; border-radius: 8px; font: inherit; font-size: .9rem;
+}
+.admin-table input:focus, .admin-table select:focus { border-color: var(--green); }
+.admin-table input[data-field="price"] { max-width: 90px; }
+.admin-table input[data-field="emoji"] { max-width: 64px; text-align: center; }
+.admin-table td.col-desc input, .admin-table td.col-image input { min-width: 160px; }
+.row-delete-btn {
+  background: none; border: 1.5px solid #D9D9D9; border-radius: 50%;
+  width: 34px; height: 34px; color: var(--text-soft); cursor: pointer; font-size: 1rem;
+}
+.row-delete-btn:hover { border-color: var(--orange); color: var(--orange); background: #FBEDE7; }
+
+/* ---------- Diálogo de exportación ---------- */
+.export-dialog {
+  border: none; border-radius: var(--radius); box-shadow: 0 12px 40px rgba(13,13,13,.3);
+  padding: 26px; max-width: 640px; width: 92vw;
+}
+.export-dialog::backdrop { background: rgba(13,13,13,.55); }
+.export-dialog h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+.export-dialog p { color: var(--text-soft); font-size: .9rem; margin-bottom: 12px; }
+.export-dialog textarea {
+  width: 100%; height: 260px; font-family: monospace; font-size: .8rem;
+  padding: 12px; border: 1.5px solid #D9D9D9; border-radius: 10px; resize: vertical;
+  background: var(--gray); color: var(--text);
+}
+.export-dialog-actions { display: flex; gap: 12px; margin-top: 14px; }
+
+@media (max-width: 720px) {
+  .admin-title { display: none; }
+}
