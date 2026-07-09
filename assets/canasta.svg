@@ -1,0 +1,40 @@
+<svg viewBox="20 38 160 132" width="320" height="264" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Canasta con frutas y verduras">
+  <!-- contenido: hojas de fondo -->
+  <path d="M60 78 C50 55, 70 40, 88 52 C82 62, 74 72, 60 78 Z" fill="#3A5931"/>
+  <path d="M140 80 C150 56, 130 42, 112 54 C118 64, 126 74, 140 80 Z" fill="#4c7340"/>
+
+  <!-- tomate -->
+  <circle cx="70" cy="82" r="19" fill="#D94B18"/>
+  <path d="M64 66 C67 60, 73 60, 76 66 C72 64, 68 64, 64 66 Z" fill="#3A5931"/>
+
+  <!-- zanahoria -->
+  <path d="M104 60 C110 60, 116 90, 108 106 C102 112, 98 106, 100 92 C101 80, 100 68, 104 60 Z" fill="#E8752F"/>
+  <path d="M101 62 C97 50, 89 48, 84 52 C90 54, 95 58, 101 62 Z" fill="#3A5931"/>
+  <path d="M106 61 C108 49, 116 46, 122 49 C116 52, 111 57, 106 61 Z" fill="#4c7340"/>
+
+  <!-- manzana -->
+  <circle cx="134" cy="86" r="17" fill="#B93E12"/>
+  <path d="M134 71 C135 66, 140 65, 141 68 C138 68, 135 69, 134 71 Z" fill="#3A5931"/>
+
+  <!-- naranja -->
+  <circle cx="98" cy="94" r="15" fill="#EF8A3D"/>
+
+  <!-- canasta (cesto tejido) -->
+  <path d="M28 92 L172 92 L156 158 C118 168, 82 168, 44 158 Z" fill="#C9781E"/>
+  <path d="M28 92 L172 92 L167 106 L33 106 Z" fill="#B96A15"/>
+  <g stroke="#8C5010" stroke-width="2.4" fill="none" opacity=".55">
+    <path d="M40 112 L48 156"/>
+    <path d="M58 116 L64 162"/>
+    <path d="M76 118 L79 166"/>
+    <path d="M94 119 L94 167"/>
+    <path d="M112 118 L109 166"/>
+    <path d="M130 116 L124 162"/>
+    <path d="M148 112 L140 156"/>
+  </g>
+  <g stroke="#8C5010" stroke-width="2.4" fill="none" opacity=".55">
+    <path d="M35 122 L165 122"/>
+    <path d="M40 138 L160 138"/>
+    <path d="M47 152 L153 152"/>
+  </g>
+  <path d="M28 92 C28 82, 172 82, 172 92" fill="none" stroke="#8C5010" stroke-width="5" stroke-linecap="round"/>
+</svg>
