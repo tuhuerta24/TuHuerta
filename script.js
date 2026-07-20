@@ -3,6 +3,49 @@
 const PRODUCTS = loadProducts();
 const WHATSAPP = '59895064328';
 
+// ---------- Opciones por peso (unidad / medio kilo / kilo) ----------
+// Productos frescos que se venden por peso: les agregamos 3 presentaciones
+// calculadas a partir del precio de referencia por kilo (el que carga el admin).
+// - "1 kg"     = precio por kilo (referencia).
+// - "1/2 kg"   = la mitad del precio por kilo.
+// - "Unidad"   = usa el precio por kilo como referencia; al pesar se cobra menos,
+//                y por eso al agregarla mostramos un aviso (ver showApproxPopup).
+// Se calcula en el sitio (no en products-data.js) para que el admin siga editando
+// un solo precio y las tres opciones se recalculen solas.
+const WEIGHT_OPTION_IDS = new Set([
+  // Frutas (todas menos palta, mango, arándanos y ananá)
+  'banana', 'banana-ecuador', 'manzana-roja', 'manzana-verde', 'manzana-pl', 'naranja',
+  'limon', 'mandarina', 'pera', 'pomelo', 'kiwi', 'lima', 'frutilla', 'melon', 'uva',
+  // Verduras vendidas por peso (excluye las de c/u, atado o bolsa)
+  'boniato-criollo', 'boniato-zanahoria', 'berenjena', 'cebolla', 'cebolla-colorada',
+  'calabacin', 'tomate-cherry', 'chaucha', 'jengibre', 'morron-rojo', 'morron-verde',
+  'morron-amarillo', 'papa', 'pepino', 'tomate', 'tomate-perita', 'zapallo-cabutia',
+  'zapallito', 'zanahoria', 'zucchini',
+]);
+
+// Precio por kilo de referencia según la unidad original con que viene cargado.
+function perKiloPrice(p) {
+  const u = (p.unit || '').toLowerCase().trim();
+  if (u === '1/2 kg' || u === '½ kg') return p.price * 2;
+  if (u === '100 g') return p.price * 10;
+  return p.price; // ya viene por kilo
+}
+
+function applyWeightOptions(products) {
+  products.forEach(p => {
+    if (!WEIGHT_OPTION_IDS.has(p.id)) return;
+    if (Array.isArray(p.variants) || Array.isArray(p.variantGroups)) return;
+    const perKilo = perKiloPrice(p);
+    p.variants = [
+      { key: 'unidad', label: 'Unidad', unit: 'unidad', price: Math.round(perKilo), approx: true },
+      { key: 'medio',  label: '½ kg',   unit: '½ kg',   price: Math.round(perKilo / 2) },
+      { key: 'kilo',   label: '1 kg',   unit: 'kg',     price: Math.round(perKilo) },
+    ];
+    p.defaultVariant = 'kilo';
+  });
+}
+applyWeightOptions(PRODUCTS);
+
 let cart = {};            // cartKey -> cantidad
 // productId -> selección de variante. String para productos con "variants" (una sola
 // opción, ej.: tamaño de especia). Objeto {grupo: opción} para productos con
@@ -107,6 +150,9 @@ function cardHTML(p) {
     ? `<img class="card-img" src="${p.image}" alt="" loading="lazy">`
     : `<span class="emoji" aria-hidden="true">${p.emoji}</span>`;
   const desc = p.desc ? `<p class="card-desc">${p.desc}</p>` : '';
+  const approxNote = (hasVariants && variant && variant.approx)
+    ? `<p class="approx-note">Precio de referencia por kilo · se cobra según el peso real</p>`
+    : '';
 
   let variantOptions = '';
   if (hasVariants) {
@@ -140,13 +186,19 @@ function cardHTML(p) {
       ${desc}
       ${variantOptions}
       ${priceHTML}
+      ${approxNote}
       <div class="card-action">${action}</div>
     </li>`;
 }
 
 function bindCards() {
   document.querySelectorAll('[data-add]').forEach(b =>
-    b.addEventListener('click', () => { cart[b.dataset.add] = 1; refresh(); }));
+    b.addEventListener('click', () => {
+      const key = b.dataset.add;
+      cart[key] = 1;
+      refresh();
+      if (key.endsWith('::unidad')) showApproxPopup(key);
+    }));
   document.querySelectorAll('.card-action [data-d]').forEach(b =>
     b.addEventListener('click', () => changeQty(b.dataset.id, parseInt(b.dataset.d))));
   document.querySelectorAll('input[data-variant-product]').forEach(r =>
@@ -203,6 +255,7 @@ function updateCartUI() {
           <div class="ci-info">
             <h4>${line.name}</h4>
             <span>${line.price > 0 ? '$' + line.price : 'a consultar'} · por ${line.unit}</span>
+            ${line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : ''}
           </div>
           <div class="ci-controls">
             <button type="button" data-id="${key}" data-d="-1" aria-label="Quitar una unidad de ${line.name}">−</button>
@@ -249,7 +302,8 @@ $('orderForm').addEventListener('submit', e => {
   let msg = `¡Hola Tu Huerta! Soy ${nombre} y quiero hacer este pedido:\n\n`;
   keys.forEach(k => {
     const line = resolveCartLine(k);
-    const sub = line.price > 0 ? ` — $${line.price * cart[k]}` : ' — a consultar';
+    const approx = line.unit === 'unidad' ? ' (ref. por kilo, se ajusta al peso)' : '';
+    const sub = line.price > 0 ? ` — $${line.price * cart[k]}${approx}` : ' — a consultar';
     msg += `• ${cart[k]} x ${line.name} (${line.unit})${sub}\n`;
   });
   msg += `\nTotal aprox: $${total}\n`;
@@ -302,6 +356,38 @@ document.addEventListener('keydown', e => {
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   }
+});
+
+// ---------- Aviso "compra por unidad" ----------
+// Al agregar una unidad, avisamos que el precio es de referencia (por kilo) y que
+// al momento de pagar se cobra según el peso real, así que se paga menos.
+const approxOverlay = $('approxOverlay');
+const approxModal = $('approxModal');
+let approxLastFocused = null;
+
+function showApproxPopup(cartKey) {
+  const line = resolveCartLine(cartKey);
+  const priceTxt = line.price > 0
+    ? `El precio que ves ($${line.price}) es una referencia basada en el precio por kilo. `
+    : '';
+  $('approxTitle').textContent = `Agregaste ${line.name} por unidad`;
+  $('approxText').textContent = `${priceTxt}Al momento de pagar te cobramos según el peso real de la unidad, así que vas a pagar menos.`;
+  approxLastFocused = document.activeElement;
+  approxOverlay.hidden = false;
+  approxModal.hidden = false;
+  $('approxOk').focus();
+}
+
+function closeApproxPopup() {
+  approxOverlay.hidden = true;
+  approxModal.hidden = true;
+  if (approxLastFocused) approxLastFocused.focus();
+}
+
+$('approxOk').addEventListener('click', closeApproxPopup);
+approxOverlay.addEventListener('click', closeApproxPopup);
+document.addEventListener('keydown', e => {
+  if (!approxModal.hidden && e.key === 'Escape') closeApproxPopup();
 });
 
 refresh();

@@ -423,3 +423,34 @@ img, svg { display: block; }
   .hero-inner { padding: 52px 20px 60px; }
   .steps-list { gap: 20px; padding: 32px 20px; }
 }
+
+/* ---------- Nota "precio de referencia por kilo" ---------- */
+.approx-note {
+  font-size: .72rem; line-height: 1.3; color: var(--orange-dark);
+  background: #FDEFE7; border-radius: 8px;
+  padding: 5px 9px; margin: 6px 0 2px; text-align: center;
+}
+.ci-approx {
+  display: block; font-size: .74rem; line-height: 1.25;
+  color: var(--orange-dark); margin-top: 2px;
+}
+
+/* ---------- Modal "compra por unidad" ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(13, 13, 13, .55);
+}
+.modal-overlay[hidden] { display: none; }
+
+.approx-modal {
+  position: fixed; z-index: 210;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: min(380px, calc(100% - 40px));
+  background: var(--white); border-radius: 18px;
+  padding: 26px 24px 22px; text-align: center;
+  box-shadow: 0 18px 50px rgba(13, 13, 13, .3);
+}
+.approx-modal[hidden] { display: none; }
+.approx-icon { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.approx-modal h2 { font-size: 1.15rem; color: var(--green-dark); margin-bottom: 8px; }
+.approx-modal p { font-size: .92rem; line-height: 1.5; color: var(--text); margin-bottom: 18px; }
