@@ -24,7 +24,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'banana-ecuador', image: 'assets/p-banana-ecuador.jpg',  emoji: '🍌', name: 'Banana Ecuador',     cat: 'frutas', unit: 'kg',     price: 129 },
   { id: 'manzana-roja', image: 'assets/p-manzana-roja.jpg',    emoji: '🍎', name: 'Manzana Roja',       cat: 'frutas', unit: 'kg',     price: 129 },
   { id: 'manzana-verde', image: 'assets/p-manzana-verde.jpg',   emoji: '🍏', name: 'Manzana Verde',      cat: 'frutas', unit: 'kg',     price: 129 },
-  { id: 'manzana-pl', image: 'assets/p-manzana-pl.jpg',      emoji: '🍎', name: 'Manzana Pink Lady',  cat: 'frutas', unit: 'kg',     price: 0 },
+  { id: 'manzana-pl', image: 'assets/p-manzana-pl.jpg',      emoji: '🍎', name: 'Manzana Pink Lady',  cat: 'frutas', unit: 'kg',     price: 139 },
   { id: 'naranja', image: 'assets/p-naranja.jpg',         emoji: '🍊', name: 'Naranja',            cat: 'frutas', unit: 'kg',     price: 59 },
   { id: 'limon', image: 'assets/p-limon.jpg',           emoji: '🍋', name: 'Limón',              cat: 'frutas', unit: 'kg',     price: 89 },
   { id: 'mandarina', image: 'assets/p-mandarina.jpg',       emoji: '🍊', name: 'Mandarina',          cat: 'frutas', unit: 'kg',     price: 69 },
