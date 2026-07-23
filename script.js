@@ -134,9 +134,21 @@ function cardHTML(p) {
   const unit = hasVariants ? variant.unit : p.unit;
   const qty = cart[cartKey] || 0;
 
+  const parent = p.parentId ? productById(p.parentId) : null;
+  const parentUnitPrice = parent
+    ? (Array.isArray(parent.variants) && parent.variants.length
+        ? (parent.variants.find(v => v.key === parent.defaultVariant) || parent.variants[0]).price
+        : parent.price)
+    : 0;
+  const originalPrice = parent ? parentUnitPrice * (p.parentQty || 1) : 0;
+  const priceWasHTML = (originalPrice > price)
+    ? `<span class="price-was">$${originalPrice}</span>` : '';
+
   const priceHTML = price > 0
-    ? `<span class="price">$${price}</span>`
+    ? `${priceWasHTML}<span class="price">$${price}</span>`
     : `<span class="price consult">Precio a consultar</span>`;
+
+  const ofertaBadge = p.cat === 'ofertas' ? `<span class="oferta-badge">Oferta</span>` : '';
 
   const action = qty > 0
     ? `<div class="qty-control" role="group" aria-label="Cantidad de ${p.name}">
@@ -180,6 +192,7 @@ function cardHTML(p) {
 
   return `
     <li class="card">
+      ${ofertaBadge}
       ${visual}
       <h3>${p.name}</h3>
       <span class="unit">por ${unit}</span>

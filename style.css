@@ -209,6 +209,7 @@ img, svg { display: block; }
 }
 
 .card {
+  position: relative;
   background: var(--white);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -226,6 +227,27 @@ img, svg { display: block; }
 .card-desc { font-size: .8rem; color: var(--text-soft); line-height: 1.4; }
 .card .price { font-weight: 700; color: var(--green); font-size: 1.1rem; margin-top: 2px; }
 .card .price.consult { color: var(--text-soft); font-weight: 600; font-size: .95rem; }
+.card .price-was {
+  font-size: .88rem; color: var(--text-soft); text-decoration: line-through;
+  margin-top: 4px;
+}
+
+/* Listón "Oferta": va sobre la tarjeta (esquina superior izquierda), no
+   sobre la foto del producto — así no hay que tocar cada imagen. */
+.oferta-badge {
+  position: absolute; top: 14px; left: -6px;
+  background: var(--orange); color: var(--white);
+  font-family: var(--font-sans); font-weight: 700; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .04em;
+  padding: 4px 12px 4px 10px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 3px 8px rgba(13, 13, 13, .2);
+}
+.oferta-badge::after {
+  content: ''; position: absolute; left: 0; top: 100%;
+  border-style: solid; border-width: 4px 6px 0 0;
+  border-color: var(--orange-dark) transparent transparent transparent;
+}
 /* margin-top: auto empuja el botón/control al piso de la tarjeta aunque el
    contenido de arriba tenga distinta altura entre productos (con o sin
    descripción/variantes), así quedan alineados en la misma fila. */
