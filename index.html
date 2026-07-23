@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 
@@ -61,6 +61,7 @@
   <nav class="cat-nav" aria-label="Categorías de productos">
     <a href="#frutas">🍊 Frutas</a>
     <a href="#verduras">🥬 Verduras</a>
+    <a href="#ofertas">🏷️ Ofertas</a>
     <a href="#terra-verde">🌿 Terra Verde</a>
     <a href="#canastas">🧺 Canastas</a>
     <a href="#otros">🌱 Otros</a>
@@ -80,6 +81,12 @@
   <section id="verduras" class="cat-section" aria-labelledby="verduras-title">
     <h2 id="verduras-title" class="cat-title">Verduras <span class="hand cat-hand" aria-hidden="true">natural</span></h2>
     <ul class="product-grid" data-cat="verduras"></ul>
+  </section>
+
+  <section id="ofertas" class="cat-section" aria-labelledby="ofertas-title">
+    <h2 id="ofertas-title" class="cat-title">Ofertas <span class="hand cat-hand" aria-hidden="true">especiales!</span></h2>
+    <p class="cat-desc">Precios especiales por tiempo limitado.</p>
+    <ul class="product-grid" data-cat="ofertas"></ul>
   </section>
 
   <section id="terra-verde" class="cat-section" aria-labelledby="terra-verde-title">
@@ -193,7 +200,16 @@
   </form>
 </aside>
 
-<script src="products-data.js"></script>
-<script src="script.js"></script>
+<!-- ===== Aviso "compra por unidad" ===== -->
+<div id="approxOverlay" class="modal-overlay" hidden></div>
+<div id="approxModal" class="approx-modal" role="dialog" aria-modal="true" aria-labelledby="approxTitle" hidden>
+  <span class="approx-icon" aria-hidden="true">⚖️</span>
+  <h2 id="approxTitle">Compra por unidad</h2>
+  <p id="approxText"></p>
+  <button id="approxOk" type="button" class="btn-primary btn-block">Entendido</button>
+</div>
+
+<script src="products-data.js?v=9"></script>
+<script src="script.js?v=9"></script>
 </body>
 </html>

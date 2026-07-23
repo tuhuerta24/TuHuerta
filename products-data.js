@@ -5,6 +5,7 @@
 const CATEGORIES = [
   { id: 'frutas',      label: 'Frutas',      emoji: '🍊' },
   { id: 'verduras',    label: 'Verduras',    emoji: '🥬' },
+  { id: 'ofertas',     label: 'Ofertas',     emoji: '🏷️', desc: 'Precios especiales por tiempo limitado.' },
   { id: 'terra-verde', label: 'Terra Verde', emoji: '🌿', desc: 'Línea de productos orgánicos elaborados.' },
   { id: 'canastas',    label: 'Canastas',    emoji: '🧺', desc: 'Cajones armados con lo mejor de la huerta, a precio fijo.' },
   { id: 'otros',       label: 'Otros',       emoji: '🌱', desc: 'Hierbas frescas, miel y quesos.' },
@@ -19,66 +20,66 @@ const CATEGORIES = [
 /* @DEFAULT_PRODUCTS:start */
 const DEFAULT_PRODUCTS = [
   // ---- Frutas ----
-  { id: 'banana',          emoji: '🍌', name: 'Banana',             cat: 'frutas', unit: 'kg',     price: 79 },
-  { id: 'banana-ecuador',  emoji: '🍌', name: 'Banana Ecuador',     cat: 'frutas', unit: 'kg',     price: 129 },
-  { id: 'manzana-roja',    emoji: '🍎', name: 'Manzana Roja',       cat: 'frutas', unit: 'kg',     price: 129 },
-  { id: 'manzana-verde',   emoji: '🍏', name: 'Manzana Verde',      cat: 'frutas', unit: 'kg',     price: 129 },
-  { id: 'manzana-pl',      emoji: '🍎', name: 'Manzana Pink Lady',  cat: 'frutas', unit: 'kg',     price: 0 },
-  { id: 'naranja',         emoji: '🍊', name: 'Naranja',            cat: 'frutas', unit: 'kg',     price: 59 },
-  { id: 'limon',           emoji: '🍋', name: 'Limón',              cat: 'frutas', unit: 'kg',     price: 89 },
-  { id: 'mandarina',       emoji: '🍊', name: 'Mandarina',          cat: 'frutas', unit: 'kg',     price: 69 },
-  { id: 'palta',           emoji: '🥑', name: 'Palta',              cat: 'frutas', unit: 'c/u',    price: 69 },
-  { id: 'pera',            emoji: '🍐', name: 'Pera',               cat: 'frutas', unit: 'kg',     price: 119 },
-  { id: 'pomelo',          emoji: '🍈', name: 'Pomelo Rosado',      cat: 'frutas', unit: 'kg',     price: 159 },
-  { id: 'kiwi',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
-  { id: 'lima',            emoji: '🍋', name: 'Lima',               cat: 'frutas', unit: '1/2 kg', price: 89 },
-  { id: 'anana',           emoji: '🍍', name: 'Ananá',              cat: 'frutas', unit: 'c/u',    price: 199 },
-  { id: 'frutilla',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: '1/2 kg', price: 199 },
-  { id: 'mango',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 99 },
-  { id: 'arandanos',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
-  { id: 'melon',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 99 },
-  { id: 'uva',             emoji: '🍇', name: 'Uva sin Semilla',    cat: 'frutas', unit: '1/2 kg', price: 199 },
+  { id: 'banana', image: 'assets/p-banana.jpg',          emoji: '🍌', name: 'Banana',             cat: 'frutas', unit: 'kg',     price: 79 },
+  { id: 'banana-ecuador', image: 'assets/p-banana-ecuador.jpg',  emoji: '🍌', name: 'Banana Ecuador',     cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-roja', image: 'assets/p-manzana-roja.jpg',    emoji: '🍎', name: 'Manzana Roja',       cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-verde', image: 'assets/p-manzana-verde.jpg',   emoji: '🍏', name: 'Manzana Verde',      cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-pl', image: 'assets/p-manzana-pl.jpg',      emoji: '🍎', name: 'Manzana Pink Lady',  cat: 'frutas', unit: 'kg',     price: 0 },
+  { id: 'naranja', image: 'assets/p-naranja.jpg',         emoji: '🍊', name: 'Naranja',            cat: 'frutas', unit: 'kg',     price: 59 },
+  { id: 'limon', image: 'assets/p-limon.jpg',           emoji: '🍋', name: 'Limón',              cat: 'frutas', unit: 'kg',     price: 89 },
+  { id: 'mandarina', image: 'assets/p-mandarina.jpg',       emoji: '🍊', name: 'Mandarina',          cat: 'frutas', unit: 'kg',     price: 69 },
+  { id: 'palta', image: 'assets/p-palta.jpg',           emoji: '🥑', name: 'Palta',              cat: 'frutas', unit: 'c/u',    price: 69 },
+  { id: 'pera', image: 'assets/p-pera.jpg',            emoji: '🍐', name: 'Pera',               cat: 'frutas', unit: 'kg',     price: 119 },
+  { id: 'pomelo', image: 'assets/p-pomelo.jpg',          emoji: '🍈', name: 'Pomelo Rosado',      cat: 'frutas', unit: 'kg',     price: 159 },
+  { id: 'kiwi', image: 'assets/p-kiwi.jpg',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
+  { id: 'lima', image: 'assets/p-lima.jpg',            emoji: '🍋', name: 'Lima',               cat: 'frutas', unit: '1/2 kg', price: 89 },
+  { id: 'anana', image: 'assets/p-anana.jpg',           emoji: '🍍', name: 'Ananá',              cat: 'frutas', unit: 'c/u',    price: 199 },
+  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: '1/2 kg', price: 199 },
+  { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 99 },
+  { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
+  { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 99 },
+  { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva sin Semilla',    cat: 'frutas', unit: '1/2 kg', price: 199 },
 
   // ---- Verduras ----
-  { id: 'ajo',              emoji: '🧄', name: 'Ajo',               cat: 'verduras', unit: 'c/u',    price: 40 },
-  { id: 'acelga',           emoji: '🥬', name: 'Acelga',            cat: 'verduras', unit: 'c/u',    price: 69 },
-  { id: 'apio',             emoji: '🌿', name: 'Apio',              cat: 'verduras', unit: 'atado',  price: 69 },
-  { id: 'albahaca',         emoji: '🌿', name: 'Albahaca',          cat: 'verduras', unit: 'bolsa',  price: 69 },
-  { id: 'boniato-criollo',  emoji: '🍠', name: 'Boniato Criollo',   cat: 'verduras', unit: 'kg',     price: 109 },
-  { id: 'boniato-zanahoria',emoji: '🍠', name: 'Boniato Zanahoria', cat: 'verduras', unit: 'kg',     price: 109 },
-  { id: 'brocoli',          emoji: '🥦', name: 'Brócoli',           cat: 'verduras', unit: 'c/u',    price: 99 },
-  { id: 'berenjena',        emoji: '🍆', name: 'Berenjena',         cat: 'verduras', unit: 'kg',     price: 129 },
-  { id: 'cebolla',          emoji: '🧅', name: 'Cebolla',           cat: 'verduras', unit: 'kg',     price: 69 },
-  { id: 'cebolla-colorada', emoji: '🧅', name: 'Cebolla Colorada',  cat: 'verduras', unit: 'kg',     price: 79 },
-  { id: 'cebolla-verdeo',   emoji: '🧅', name: 'Cebolla de Verdeo', cat: 'verduras', unit: 'atado',  price: 99 },
-  { id: 'calabacin',        emoji: '🥒', name: 'Calabacín',         cat: 'verduras', unit: 'kg',     price: 55 },
-  { id: 'choclo',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 69 },
-  { id: 'tomate-cherry',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: '1/2 kg', price: 149 },
-  { id: 'chaucha',          emoji: '🫛', name: 'Chaucha',           cat: 'verduras', unit: '1/2 kg', price: 0 },
-  { id: 'coliflor',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 99 },
-  { id: 'espinaca',         emoji: '🥬', name: 'Espinaca',          cat: 'verduras', unit: 'atado',  price: 79 },
-  { id: 'jengibre',         emoji: '🌿', name: 'Jengibre',          cat: 'verduras', unit: '100 g',  price: 28 },
-  { id: 'lechuga',          emoji: '🥬', name: 'Lechuga',           cat: 'verduras', unit: 'c/u',    price: 69 },
-  { id: 'lechuga-crespa',   emoji: '🥬', name: 'Lechuga Crespa',    cat: 'verduras', unit: 'c/u',    price: 69 },
-  { id: 'morron-rojo',      emoji: '🫑', name: 'Morrón Rojo',       cat: 'verduras', unit: 'kg',     price: 239 },
-  { id: 'morron-verde',     emoji: '🫑', name: 'Morrón Verde',      cat: 'verduras', unit: 'kg',     price: 129 },
-  { id: 'morron-amarillo',  emoji: '🫑', name: 'Morrón Amarillo',   cat: 'verduras', unit: 'kg',     price: 0 },
-  { id: 'nabo',             emoji: '🥬', name: 'Nabo',              cat: 'verduras', unit: 'c/u',    price: 20 },
-  { id: 'nabo-atado',       emoji: '🥬', name: 'Nabo (Atado 6-7u)', cat: 'verduras', unit: 'atado',  price: 150 },
-  { id: 'papa',             emoji: '🥔', name: 'Papa',              cat: 'verduras', unit: 'kg',     price: 99 },
-  { id: 'puerro',           emoji: '🧅', name: 'Puerro',            cat: 'verduras', unit: 'c/u',    price: 30 },
-  { id: 'pepino',           emoji: '🥒', name: 'Pepino',            cat: 'verduras', unit: 'kg',     price: 129 },
-  { id: 'perejil',          emoji: '🌿', name: 'Perejil',           cat: 'verduras', unit: 'atado',  price: 29 },
-  { id: 'remolacha',        emoji: '🌿', name: 'Remolacha',         cat: 'verduras', unit: 'atado',  price: 139 },
-  { id: 'rucula',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
-  { id: 'repollo',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 99 },
-  { id: 'rabanito',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
-  { id: 'tomate',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 189 },
-  { id: 'tomate-perita',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
-  { id: 'zapallo-cabutia',  emoji: '🎃', name: 'Zapallo Cabutiá',   cat: 'verduras', unit: 'kg',     price: 55 },
-  { id: 'zapallito',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 149 },
-  { id: 'zanahoria',        emoji: '🥕', name: 'Zanahoria',         cat: 'verduras', unit: 'kg',     price: 69 },
-  { id: 'zucchini',         emoji: '🥒', name: 'Zucchini',          cat: 'verduras', unit: 'kg',     price: 189 },
+  { id: 'ajo', image: 'assets/p-ajo.jpg',              emoji: '🧄', name: 'Ajo',               cat: 'verduras', unit: 'c/u',    price: 40 },
+  { id: 'acelga', image: 'assets/p-acelga.jpg',           emoji: '🥬', name: 'Acelga',            cat: 'verduras', unit: 'c/u',    price: 69 },
+  { id: 'apio', image: 'assets/p-apio.jpg',             emoji: '🌿', name: 'Apio',              cat: 'verduras', unit: 'atado',  price: 69 },
+  { id: 'albahaca', image: 'assets/p-albahaca.jpg',         emoji: '🌿', name: 'Albahaca',          cat: 'verduras', unit: 'bolsa',  price: 69 },
+  { id: 'boniato-criollo', image: 'assets/p-boniato-criollo.jpg',  emoji: '🍠', name: 'Boniato Criollo',   cat: 'verduras', unit: 'kg',     price: 109 },
+  { id: 'boniato-zanahoria', image: 'assets/p-boniato-zanahoria.jpg',emoji: '🍠', name: 'Boniato Zanahoria', cat: 'verduras', unit: 'kg',     price: 109 },
+  { id: 'brocoli', image: 'assets/p-brocoli.jpg',          emoji: '🥦', name: 'Brócoli',           cat: 'verduras', unit: 'c/u',    price: 99 },
+  { id: 'berenjena', image: 'assets/p-berenjena.jpg',        emoji: '🍆', name: 'Berenjena',         cat: 'verduras', unit: 'kg',     price: 129 },
+  { id: 'cebolla', image: 'assets/p-cebolla.jpg',          emoji: '🧅', name: 'Cebolla',           cat: 'verduras', unit: 'kg',     price: 69 },
+  { id: 'cebolla-colorada', image: 'assets/p-cebolla-colorada.jpg', emoji: '🧅', name: 'Cebolla Colorada',  cat: 'verduras', unit: 'kg',     price: 79 },
+  { id: 'cebolla-verdeo', image: 'assets/p-cebolla-verdeo.jpg',   emoji: '🧅', name: 'Cebolla de Verdeo', cat: 'verduras', unit: 'atado',  price: 99 },
+  { id: 'calabacin', image: 'assets/p-calabacin.jpg',        emoji: '🥒', name: 'Calabacín',         cat: 'verduras', unit: 'kg',     price: 55 },
+  { id: 'choclo', image: 'assets/p-choclo.jpg',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 69 },
+  { id: 'tomate-cherry', image: 'assets/p-tomate-cherry.jpg',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: '1/2 kg', price: 149 },
+  { id: 'chaucha', image: 'assets/p-chaucha.jpg',          emoji: '🫛', name: 'Chaucha',           cat: 'verduras', unit: '1/2 kg', price: 0 },
+  { id: 'coliflor', image: 'assets/p-coliflor.jpg',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 99 },
+  { id: 'espinaca', image: 'assets/p-espinaca.jpg',         emoji: '🥬', name: 'Espinaca',          cat: 'verduras', unit: 'atado',  price: 79 },
+  { id: 'jengibre', image: 'assets/p-jengibre.jpg',         emoji: '🌿', name: 'Jengibre',          cat: 'verduras', unit: '100 g',  price: 28 },
+  { id: 'lechuga', image: 'assets/p-lechuga.jpg',          emoji: '🥬', name: 'Lechuga',           cat: 'verduras', unit: 'c/u',    price: 69 },
+  { id: 'lechuga-crespa', image: 'assets/p-lechuga-crespa.jpg',   emoji: '🥬', name: 'Lechuga Crespa',    cat: 'verduras', unit: 'c/u',    price: 69 },
+  { id: 'morron-rojo', image: 'assets/p-morron-rojo.jpg',      emoji: '🫑', name: 'Morrón Rojo',       cat: 'verduras', unit: 'kg',     price: 239 },
+  { id: 'morron-verde', image: 'assets/p-morron-verde.jpg',     emoji: '🫑', name: 'Morrón Verde',      cat: 'verduras', unit: 'kg',     price: 129 },
+  { id: 'morron-amarillo', image: 'assets/p-morron-amarillo.jpg',  emoji: '🫑', name: 'Morrón Amarillo',   cat: 'verduras', unit: 'kg',     price: 0 },
+  { id: 'nabo', image: 'assets/p-nabo.jpg',             emoji: '🥬', name: 'Nabo',              cat: 'verduras', unit: 'c/u',    price: 20 },
+  { id: 'nabo-atado', image: 'assets/p-nabo-atado.jpg',       emoji: '🥬', name: 'Nabo (Atado 6-7u)', cat: 'verduras', unit: 'atado',  price: 150 },
+  { id: 'papa', image: 'assets/p-papa.jpg',             emoji: '🥔', name: 'Papa',              cat: 'verduras', unit: 'kg',     price: 99 },
+  { id: 'puerro', image: 'assets/p-puerro.jpg',           emoji: '🧅', name: 'Puerro',            cat: 'verduras', unit: 'c/u',    price: 30 },
+  { id: 'pepino', image: 'assets/p-pepino.jpg',           emoji: '🥒', name: 'Pepino',            cat: 'verduras', unit: 'kg',     price: 129 },
+  { id: 'perejil', image: 'assets/p-perejil.jpg',          emoji: '🌿', name: 'Perejil',           cat: 'verduras', unit: 'atado',  price: 29 },
+  { id: 'remolacha', image: 'assets/p-remolacha.jpg',        emoji: '🌿', name: 'Remolacha',         cat: 'verduras', unit: 'atado',  price: 139 },
+  { id: 'rucula', image: 'assets/p-rucula.jpg',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
+  { id: 'repollo', image: 'assets/p-repollo.jpg',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 99 },
+  { id: 'rabanito', image: 'assets/p-rabanito.jpg',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
+  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 189 },
+  { id: 'tomate-perita', image: 'assets/p-tomate-perita.jpg',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
+  { id: 'zapallo-cabutia', image: 'assets/p-zapallo-cabutia.jpg',  emoji: '🎃', name: 'Zapallo Cabutiá',   cat: 'verduras', unit: 'kg',     price: 55 },
+  { id: 'zapallito', image: 'assets/p-zapallito.jpg',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 149 },
+  { id: 'zanahoria', image: 'assets/p-zanahoria.jpg',        emoji: '🥕', name: 'Zanahoria',         cat: 'verduras', unit: 'kg',     price: 69 },
+  { id: 'zucchini', image: 'assets/p-zucchini.jpg',         emoji: '🥒', name: 'Zucchini',          cat: 'verduras', unit: 'kg',     price: 189 },
 
   // ---- Terra Verde (línea de productos orgánicos elaborados) ----
   {
@@ -87,7 +88,7 @@ const DEFAULT_PRODUCTS = [
     desc: 'Sabor intenso, aroma fresco. Variedad Picual.',
   },
   {
-    id: 'tv-coco', name: 'Aceite de Coco Orgánico', cat: 'terra-verde',
+    id: 'tv-coco', image: 'assets/p-tv-coco.jpg', name: 'Aceite de Coco Orgánico', cat: 'terra-verde',
     unit: '200 g', price: 260, emoji: '🥥',
   },
   {
@@ -101,43 +102,43 @@ const DEFAULT_PRODUCTS = [
     desc: 'Nativa, 100% natural. Sabor original.',
   },
 
-  // ---- Canastas (cajones de tamaño fijo) ----
+  // ---- Canastas (armadas, a precio fijo · envío gratis) ----
   {
-    id: 'canasta-chica', name: 'Canasta Chica', cat: 'canastas',
-    unit: 'caja', price: 690, image: 'assets/canasta.svg',
-    desc: '4 frutas + 3 verduras de estación · aprox. 3 kg',
+    id: 'canasta-esencial', name: 'Canasta Esencial', cat: 'canastas',
+    unit: 'caja', price: 1190, image: 'assets/p-canasta-esencial.jpg',
+    desc: 'Incluye: 1 ajo · 1k banana · ½k boniato · 1 calabacín · ½k cebolla · 15 huevos especiales · rúcula · acelga · ½k limón · 1k naranja · 1k papa · 1k mandarina · 1k manzana red · ½k tomate · ½k zanahoria. Envío gratis.',
   },
   {
-    id: 'canasta-mediana', name: 'Canasta Mediana', cat: 'canastas',
-    unit: 'caja', price: 1090, image: 'assets/canasta.svg',
-    desc: '6 frutas + 5 verduras de estación · aprox. 5 kg',
+    id: 'canasta-inteligente', name: 'Canasta Inteligente', cat: 'canastas',
+    unit: 'caja', price: 990, image: 'assets/p-canasta-inteligente.jpg',
+    desc: 'Incluye: 1 ajo · brócoli · 1k banana · 1k boniato · 1k cebolla · lechuga · 1k naranja · 1k mandarina · 1k manzana · ½k morrón · 1k papa · ½k zanahoria · calabacín · 1k berenjena · rúcula. Envío gratis.',
   },
   {
     id: 'canasta-familiar', name: 'Canasta Familiar', cat: 'canastas',
-    unit: 'caja', price: 1590, image: 'assets/canasta.svg',
-    desc: '8 frutas + 7 verduras de estación · aprox. 8 kg',
+    unit: 'caja', price: 1590, image: 'assets/p-canasta-familiar.jpg',
+    desc: 'Incluye: 2 acelgas · 2k banana · 1k boniato · 1 calabacín · 1k cebolla · 1 lechuga crespa · ½k limón · 1k naranja · 1k manzana roja premium · ½k manzana verde premium · ½k morrón · 1k papa rosada premium · 1k tomate · 6 puerros · ½k zanahoria · ½k zapallito · 1k mandarina. Envío gratis.',
   },
 
   // ---- Otros (hierbas, miel, quesos) ----
-  { id: 'ciboulette',      emoji: '🌿', name: 'Ciboulette',        cat: 'otros', unit: 'atado', price: 99 },
-  { id: 'brotes-soja',     emoji: '🌱', name: 'Brotes de Soja',    cat: 'otros', unit: 'bolsa', price: 249 },
-  { id: 'kale',            emoji: '🥬', name: 'Kale',              cat: 'otros', unit: 'atado', price: 65 },
-  { id: 'cilantro',        emoji: '🌿', name: 'Cilantro',          cat: 'otros', unit: 'atado', price: 99 },
-  { id: 'romero',          emoji: '🌿', name: 'Romero',            cat: 'otros', unit: 'atado', price: 65 },
-  { id: 'laurel',          emoji: '🌿', name: 'Laurel',            cat: 'otros', unit: 'atado', price: 60 },
-  { id: 'miel-500',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1/2 kg', price: 175 },
-  { id: 'miel-1kg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1 kg',   price: 299 },
-  { id: 'queso-colonia',   emoji: '🧀', name: 'Queso Colonia',     cat: 'otros', unit: '1/2 kg', price: 259 },
-  { id: 'queso-parmesano', emoji: '🧀', name: 'Queso Parmesano',   cat: 'otros', unit: '1/2 kg', price: 330 },
+  { id: 'ciboulette', image: 'assets/p-ciboulette.jpg',      emoji: '🌿', name: 'Ciboulette',        cat: 'otros', unit: 'atado', price: 99 },
+  { id: 'brotes-soja', image: 'assets/p-brotes-soja.jpg',     emoji: '🌱', name: 'Brotes de Soja',    cat: 'otros', unit: 'bolsa', price: 249 },
+  { id: 'kale', image: 'assets/p-kale.jpg',            emoji: '🥬', name: 'Kale',              cat: 'otros', unit: 'atado', price: 65 },
+  { id: 'cilantro', image: 'assets/p-cilantro.jpg',        emoji: '🌿', name: 'Cilantro',          cat: 'otros', unit: 'atado', price: 99 },
+  { id: 'romero', image: 'assets/p-romero.jpg',          emoji: '🌿', name: 'Romero',            cat: 'otros', unit: 'atado', price: 65 },
+  { id: 'laurel', image: 'assets/p-laurel.jpg',          emoji: '🌿', name: 'Laurel',            cat: 'otros', unit: 'atado', price: 60 },
+  { id: 'miel-500', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1/2 kg', price: 175 },
+  { id: 'miel-1kg', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1 kg',   price: 299 },
+  { id: 'queso-colonia', image: 'assets/p-queso-colonia.jpg',   emoji: '🧀', name: 'Queso Colonia',     cat: 'otros', unit: '1/2 kg', price: 259 },
+  { id: 'queso-parmesano', image: 'assets/p-queso-parmesano.jpg', emoji: '🧀', name: 'Queso Parmesano',   cat: 'otros', unit: '1/2 kg', price: 330 },
 
   // ---- Congelados ----
-  { id: 'frutilla-congelada', emoji: '🍓', name: 'Frutillas Congeladas', cat: 'congelados', unit: '1 kg', price: 279 },
+  { id: 'frutilla-congelada', image: 'assets/p-frutilla-congelada.jpg', emoji: '🍓', name: 'Frutillas Congeladas', cat: 'congelados', unit: '1 kg', price: 279 },
 
   // ---- Huevos ----
   // Tres productos distintos (Jumbo, Especial, Regular). Cada uno con su única
   // opción de cantidad: maple de 30 u (preseleccionado) o de 15 u.
   {
-    id: 'huevo-jumbo', emoji: '🥚', name: 'Huevo Jumbo', cat: 'huevos',
+    id: 'huevo-jumbo', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Jumbo', cat: 'huevos',
     defaultVariant: '30u',
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 349 },
@@ -145,7 +146,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'huevo-especial', emoji: '🥚', name: 'Huevo Especial', cat: 'huevos',
+    id: 'huevo-especial', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Especial', cat: 'huevos',
     defaultVariant: '30u',
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 309 },
@@ -153,7 +154,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'huevo-regular', emoji: '🥚', name: 'Huevo Regular', cat: 'huevos',
+    id: 'huevo-regular', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Regular', cat: 'huevos',
     defaultVariant: '30u',
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 289 },
@@ -164,7 +165,7 @@ const DEFAULT_PRODUCTS = [
   // ---- Especias ----
   // Cada especia es un único producto con 3 presentaciones seleccionables.
   {
-    id: 'especia-ajo-molido', emoji: '🧂', name: 'Ajo Molido', cat: 'especias',
+    id: 'especia-ajo-molido', image: 'assets/p-especia-ajo-molido.jpg', emoji: '🧂', name: 'Ajo Molido', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 149 },
@@ -173,7 +174,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-canela-rama', emoji: '🧂', name: 'Canela en Rama', cat: 'especias',
+    id: 'especia-canela-rama', image: 'assets/p-especia-canela-rama.jpg', emoji: '🧂', name: 'Canela en Rama', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 540 },
@@ -182,7 +183,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-canela-molida', emoji: '🧂', name: 'Canela Molida', cat: 'especias',
+    id: 'especia-canela-molida', image: 'assets/p-especia-canela-molida.jpg', emoji: '🧂', name: 'Canela Molida', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 395 },
@@ -191,7 +192,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-cond-verde', emoji: '🧂', name: 'Condimento Verde', cat: 'especias',
+    id: 'especia-cond-verde', image: 'assets/p-especia-cond-verde.jpg', emoji: '🧂', name: 'Condimento Verde', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 244 },
@@ -200,7 +201,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-curcuma', emoji: '🧂', name: 'Cúrcuma', cat: 'especias',
+    id: 'especia-curcuma', image: 'assets/p-especia-curcuma.jpg', emoji: '🧂', name: 'Cúrcuma', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 268 },
@@ -209,7 +210,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-nuez-moscada', emoji: '🧂', name: 'Nuez Moscada', cat: 'especias',
+    id: 'especia-nuez-moscada', image: 'assets/p-especia-nuez-moscada.jpg', emoji: '🧂', name: 'Nuez Moscada', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 519 },
@@ -218,7 +219,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-oregano', emoji: '🧂', name: 'Orégano', cat: 'especias',
+    id: 'especia-oregano', image: 'assets/p-especia-oregano.jpg', emoji: '🧂', name: 'Orégano', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 130 },
@@ -227,7 +228,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-pimenton', emoji: '🧂', name: 'Pimentón', cat: 'especias',
+    id: 'especia-pimenton', image: 'assets/p-especia-pimenton.jpg', emoji: '🧂', name: 'Pimentón', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 195 },
@@ -236,7 +237,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-pimienta-negra', emoji: '🧂', name: 'Pimienta Negra Molida', cat: 'especias',
+    id: 'especia-pimienta-negra', image: 'assets/p-especia-pimienta-negra.jpg', emoji: '🧂', name: 'Pimienta Negra Molida', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 260 },
@@ -245,7 +246,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'especia-tomillo', emoji: '🧂', name: 'Tomillo', cat: 'especias',
+    id: 'especia-tomillo', image: 'assets/p-especia-tomillo.jpg', emoji: '🧂', name: 'Tomillo', cat: 'especias',
     defaultVariant: '500g',
     variants: [
       { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 170 },
@@ -255,10 +256,11 @@ const DEFAULT_PRODUCTS = [
   },
 
   // ---- Sal Marina (empresa asociada) ----
-  { id: 'sal-pimienta-200', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '200 g', price: 199 },
-  { id: 'sal-pimienta-500', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '500 g', price: 420 },
-  { id: 'sal-ajo',          emoji: '🧂', name: 'Sal con Ajo',                       cat: 'sal-marina', unit: '180 g', price: 330 },
-  { id: 'sal-ahumada',      emoji: '🧂', name: 'Sal Ahumada Ancestral',             cat: 'sal-marina', unit: '150 g', price: 410 },
+  { id: 'sal-pimienta-200', image: 'assets/p-sal-pimienta-200.jpg', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '200 g', price: 199 },
+  { id: 'sal-pimienta-500', image: 'assets/p-sal-pimienta-500.jpg', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '500 g', price: 420 },
+  { id: 'sal-ajo', image: 'assets/p-sal-ajo.jpg',          emoji: '🧂', name: 'Sal con Ajo',                       cat: 'sal-marina', unit: '180 g', price: 330 },
+  { id: 'sal-ahumada', image: 'assets/p-sal-ahumada.jpg',      emoji: '🧂', name: 'Sal Ahumada Ancestral',             cat: 'sal-marina', unit: '150 g', price: 410 },
+  { id: 'sal-oro', image: 'assets/p-sal-oro.jpg',          emoji: '🧂', name: 'Sal de Oro',                        cat: 'sal-marina', unit: '150 g', price: 359 },
 ];
 /* @DEFAULT_PRODUCTS:end */
 
@@ -274,7 +276,7 @@ const PRODUCTS_DATA_VERSION = 4;
 // comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
 // la más reciente (ver loadProducts). El panel de admin regenera este valor al
 // descargar el archivo — no lo edites a mano.
-const DEFAULT_PRODUCTS_UPDATED_AT = '2026-07-08T00:00:00.000Z';
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-07-20T18:00:00.000Z';
 
 // Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
 function _productsTime(iso) {
