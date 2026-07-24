@@ -66,7 +66,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'morron-amarillo', image: 'assets/p-morron-amarillo.jpg',  emoji: '🫑', name: 'Morrón Amarillo',   cat: 'verduras', unit: 'kg',     price: 0 },
   { id: 'nabo', image: 'assets/p-nabo.jpg',             emoji: '🥬', name: 'Nabo',              cat: 'verduras', unit: 'c/u',    price: 20 },
   { id: 'nabo-atado', image: 'assets/p-nabo-atado.jpg',       emoji: '🥬', name: 'Nabo (Atado 6-7u)', cat: 'verduras', unit: 'atado',  price: 150 },
-  { id: 'papa', image: 'assets/p-papa.jpg',             emoji: '🥔', name: 'Papa',              cat: 'verduras', unit: 'kg',     price: 89 },
+  { id: 'papa', image: 'assets/p-papa.jpeg',             emoji: '🥔', name: 'Papa',              cat: 'verduras', unit: 'kg',     price: 89 },
   { id: 'puerro', image: 'assets/p-puerro.jpg',           emoji: '🧅', name: 'Puerro',            cat: 'verduras', unit: 'c/u',    price: 30 },
   { id: 'pepino', image: 'assets/p-pepino.jpg',           emoji: '🥒', name: 'Pepino',            cat: 'verduras', unit: 'kg',     price: 129 },
   { id: 'perejil', image: 'assets/p-perejil.jpg',          emoji: '🌿', name: 'Perejil',           cat: 'verduras', unit: 'atado',  price: 29 },
