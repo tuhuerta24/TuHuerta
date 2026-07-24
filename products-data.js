@@ -160,7 +160,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'frutilla-congelada', image: 'assets/p-frutilla-congelada.jpg', emoji: '🍓', name: 'Frutillas Congeladas', cat: 'congelados', unit: '1 kg', price: 279 },
 
   // ---- Huevos ----
-  // Tres productos distintos (Jumbo, Especial, Regular). Cada uno con su única
+  // Tres productos distintos (Jumbo, Extra, Especial). Cada uno con su única
   // opción de cantidad: maple de 30 u (preseleccionado) o de 15 u.
   {
     id: 'huevo-jumbo', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Jumbo', cat: 'huevos',
@@ -171,7 +171,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'huevo-especial', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Especial', cat: 'huevos',
+    id: 'huevo-extra', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Extra', cat: 'huevos',
     defaultVariant: '30u',
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 309 },
@@ -179,7 +179,7 @@ const DEFAULT_PRODUCTS = [
     ],
   },
   {
-    id: 'huevo-regular', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Regular', cat: 'huevos',
+    id: 'huevo-especial', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo especial', cat: 'huevos',
     defaultVariant: '30u',
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 289 },
