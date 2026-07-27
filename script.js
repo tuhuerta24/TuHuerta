@@ -298,18 +298,9 @@ function updateCartUI() {
 
 function refresh() { renderGrids(); updateCartUI(); }
 
-// ---------- Enviar pedido ----------
-$('orderForm').addEventListener('submit', e => {
-  e.preventDefault();
+// ---------- Armar el mensaje de WhatsApp ----------
+function buildOrderMessage({ nombre, direccion, notas, pago }) {
   const keys = Object.keys(cart);
-  if (keys.length === 0) return;
-
-  const nombre = $('fName').value.trim();
-  const direccion = $('fAddress').value.trim();
-  const notas = $('fNotes').value.trim();
-  // El submit del form nativo ya exige que haya un método de pago elegido (required),
-  // así que acá siempre hay uno seleccionado.
-  const pago = document.querySelector('input[name="pago"]:checked').value;
   const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
 
   let msg = `¡Hola Tu Huerta! Soy ${nombre} y quiero hacer este pedido:\n\n`;
@@ -324,8 +315,85 @@ $('orderForm').addEventListener('submit', e => {
   msg += `Entrega en: ${direccion}\n`;
   if (notas) msg += `Comentarios: ${notas}\n`;
   msg += `\n¿Coordinamos día y horario de entrega?`;
+  return msg;
+}
 
+// ---------- Previsualización del pedido ----------
+const previewOverlay = $('previewOverlay');
+const previewModal = $('previewModal');
+let previewLastFocused = null;
+let pendingOrder = null; // datos de entrega confirmados por el form, listos para enviar
+
+function openPreview(orderData) {
+  pendingOrder = orderData;
+  const keys = Object.keys(cart);
+  const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
+  const hasConsult = keys.some(k => resolveCartLine(k).price === 0);
+
+  $('previewItems').innerHTML = keys.map(k => {
+    const line = resolveCartLine(k);
+    const approx = line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : '';
+    const sub = line.price > 0 ? `$${line.price * cart[k]}` : 'a consultar';
+    return `
+      <li class="preview-item">
+        <div class="ci-info">
+          <h4>${cart[k]} x ${line.name}</h4>
+          <span>por ${line.unit}</span>
+          ${approx}
+        </div>
+        <strong>${sub}</strong>
+      </li>`;
+  }).join('');
+
+  $('previewTotal').textContent = '$' + total + (hasConsult ? ' +' : '');
+
+  const dl = $('previewDelivery');
+  dl.innerHTML = `
+    <dt>Nombre</dt><dd>${orderData.nombre}</dd>
+    <dt>Dirección</dt><dd>${orderData.direccion}</dd>
+    ${orderData.notas ? `<dt>Comentarios</dt><dd>${orderData.notas}</dd>` : ''}
+    <dt>Pago</dt><dd>${orderData.pago}</dd>`;
+
+  previewLastFocused = document.activeElement;
+  previewOverlay.hidden = false;
+  previewModal.hidden = false;
+  $('previewClose').focus();
+}
+
+function closePreview() {
+  previewOverlay.hidden = true;
+  previewModal.hidden = true;
+  if (previewLastFocused) previewLastFocused.focus();
+}
+
+$('previewClose').addEventListener('click', closePreview);
+$('previewEdit').addEventListener('click', closePreview);
+previewOverlay.addEventListener('click', closePreview);
+document.addEventListener('keydown', e => {
+  if (!previewModal.hidden && e.key === 'Escape') closePreview();
+});
+
+$('previewConfirm').addEventListener('click', () => {
+  if (!pendingOrder) return;
+  const msg = buildOrderMessage(pendingOrder);
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+  closePreview();
+});
+
+// ---------- Revisar pedido (paso previo al envío) ----------
+$('orderForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const keys = Object.keys(cart);
+  if (keys.length === 0) return;
+
+  openPreview({
+    nombre: $('fName').value.trim(),
+    direccion: $('fAddress').value.trim(),
+    notas: $('fNotes').value.trim(),
+    // El submit del form nativo ya exige que haya un método de pago elegido (required),
+    // así que acá siempre hay uno seleccionado.
+    pago: document.querySelector('input[name="pago"]:checked').value,
+  });
 });
 
 // ---------- Buscador ----------

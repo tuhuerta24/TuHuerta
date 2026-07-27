@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -195,7 +195,7 @@
     <p class="total-note">El total es aproximado: algunos productos se cotizan al armar el pedido.</p>
 
     <button type="submit" id="checkoutBtn" class="btn-primary btn-block" disabled>
-      Enviar pedido por WhatsApp
+      Revisar pedido
     </button>
   </form>
 </aside>
@@ -209,7 +209,35 @@
   <button id="approxOk" type="button" class="btn-primary btn-block">Entendido</button>
 </div>
 
-<script src="products-data.js?v=13"></script>
-<script src="script.js?v=13"></script>
+<!-- ===== Previsualización del pedido ===== -->
+<div id="previewOverlay" class="modal-overlay" hidden></div>
+<div id="previewModal" class="preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewTitle" hidden>
+  <header class="preview-header">
+    <h2 id="previewTitle">Revisá tu pedido</h2>
+    <button id="previewClose" class="close-btn" aria-label="Cerrar previsualización">✕</button>
+  </header>
+
+  <div class="preview-body">
+    <ul id="previewItems" class="preview-items"></ul>
+
+    <div class="preview-total-row">
+      <span>Total estimado</span>
+      <strong id="previewTotal">$0</strong>
+    </div>
+
+    <div class="preview-delivery">
+      <h3>Datos de entrega</h3>
+      <dl id="previewDelivery"></dl>
+    </div>
+  </div>
+
+  <div class="preview-actions">
+    <button id="previewEdit" type="button" class="btn-secondary btn-block">Editar pedido</button>
+    <button id="previewConfirm" type="button" class="btn-primary btn-block">Confirmar y enviar por WhatsApp</button>
+  </div>
+</div>
+
+<script src="products-data.js?v=14"></script>
+<script src="script.js?v=14"></script>
 </body>
 </html>
