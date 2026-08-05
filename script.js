@@ -1,474 +1,353 @@
-// ==== Tu Huerta · Opción 8 — Catálogo con precios reales ====
-// Los productos viven en products-data.js (fuente compartida con el panel de admin).
-const PRODUCTS = loadProducts();
-const WHATSAPP = '59895064328';
+// ==== Tu Huerta · Fuente única de datos de productos ====
+// La usan tanto script.js (sitio de pedidos) como admin.js (panel de administración).
+// Precios tomados del "Listado de precios de la semana" (carpeta Catalogo).
 
-// ---------- Opciones por peso (unidad / medio kilo / kilo) ----------
-// Productos frescos que se venden por peso: les agregamos 3 presentaciones
-// calculadas a partir del precio de referencia por kilo (el que carga el admin).
-// - "1 kg"     = precio por kilo (referencia).
-// - "1/2 kg"   = la mitad del precio por kilo.
-// - "Unidad"   = usa el precio por kilo como referencia; al pesar se cobra menos,
-//                y por eso al agregarla mostramos un aviso (ver showApproxPopup).
-// Se calcula en el sitio (no en products-data.js) para que el admin siga editando
-// un solo precio y las tres opciones se recalculen solas.
-const WEIGHT_OPTION_IDS = new Set([
-  // Frutas (todas menos palta, mango, arándanos y ananá)
-  'banana', 'banana-ecuador', 'manzana-roja', 'manzana-verde', 'manzana-pl', 'naranja',
-  'limon', 'mandarina', 'pera', 'pomelo', 'kiwi', 'lima', 'frutilla', 'melon', 'uva',
-  // Verduras vendidas por peso (excluye las de c/u, atado o bolsa)
-  'boniato-criollo', 'boniato-zanahoria', 'berenjena', 'cebolla', 'cebolla-colorada',
-  'calabacin', 'tomate-cherry', 'chaucha', 'jengibre', 'morron-rojo', 'morron-verde',
-  'morron-amarillo', 'papa', 'pepino', 'tomate', 'tomate-perita', 'zapallo-cabutia',
-  'zapallito', 'zanahoria', 'zucchini',
-]);
+const CATEGORIES = [
+  { id: 'frutas',      label: 'Frutas',      emoji: '🍊' },
+  { id: 'verduras',    label: 'Verduras',    emoji: '🥬' },
+  { id: 'ofertas',     label: 'Ofertas',     emoji: '🏷️', desc: 'Precios especiales por tiempo limitado.' },
+  { id: 'terra-verde', label: 'Terra Verde', emoji: '🌿', desc: 'Línea de productos orgánicos elaborados.' },
+  { id: 'canastas',    label: 'Canastas',    emoji: '🧺', desc: 'Cajones armados con lo mejor de la huerta, a precio fijo.' },
+  { id: 'otros',       label: 'Otros',       emoji: '🌱', desc: 'Hierbas frescas, miel y quesos.' },
+  { id: 'congelados',  label: 'Congelados',  emoji: '❄️' },
+  { id: 'huevos',      label: 'Huevos',      emoji: '🥚', desc: 'Consultar precio mayorista.' },
+  { id: 'especias',    label: 'Especias',    emoji: '🧂' },
+  { id: 'sal-marina',  label: 'Sal Marina',  emoji: '🌊', desc: 'Sales artesanales de una empresa asociada.' },
+];
 
-// Precio por kilo de referencia según la unidad original con que viene cargado.
-function perKiloPrice(p) {
-  const u = (p.unit || '').toLowerCase().trim();
-  if (u === '1/2 kg' || u === '½ kg') return p.price * 2;
-  if (u === '100 g') return p.price * 10;
-  return p.price; // ya viene por kilo
+// Los marcadores @DEFAULT_PRODUCTS delimitan el bloque de datos que el panel de
+// admin regenera al "Descargar archivo para publicar". No los borres ni muevas.
+/* @DEFAULT_PRODUCTS:start */
+const DEFAULT_PRODUCTS = [
+  // ---- Frutas ----
+  { id: 'banana', image: 'assets/p-banana.jpg',          emoji: '🍌', name: 'Banana',             cat: 'frutas', unit: 'kg',     price: 75 },
+  { id: 'banana-ecuador', image: 'assets/p-banana-ecuador.jpg',  emoji: '🍌', name: 'Banana Ecuador',     cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-roja', image: 'assets/p-manzana-roja.jpg',    emoji: '🍎', name: 'Manzana Roja',       cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-verde', image: 'assets/p-manzana-verde.jpg',   emoji: '🍏', name: 'Manzana Verde',      cat: 'frutas', unit: 'kg',     price: 129 },
+  { id: 'manzana-pl', image: 'assets/p-manzana-pl.jpg',      emoji: '🍎', name: 'Manzana Pink Lady',  cat: 'frutas', unit: 'kg',     price: 135 },
+  { id: 'naranja', image: 'assets/p-naranja.jpg',         emoji: '🍊', name: 'Naranja',            cat: 'frutas', unit: 'kg',     price: 59 },
+  { id: 'limon', image: 'assets/p-limon.jpg',           emoji: '🍋', name: 'Limón',              cat: 'frutas', unit: 'kg',     price: 69 },
+  { id: 'mandarina', image: 'assets/p-mandarina.jpg',       emoji: '🍊', name: 'Mandarina',          cat: 'frutas', unit: 'kg',     price: 69 },
+  { id: 'palta', image: 'assets/p-palta.jpg',           emoji: '🥑', name: 'Palta',              cat: 'frutas', unit: 'c/u',    price: 69 },
+  { id: 'pera', image: 'assets/p-pera.jpg',            emoji: '🍐', name: 'Pera',               cat: 'frutas', unit: 'kg',     price: 119 },
+  { id: 'pomelo', image: 'assets/p-pomelo.jpg',          emoji: '🍈', name: 'Pomelo Rosado',      cat: 'frutas', unit: 'kg',     price: 99 },
+  { id: 'kiwi', image: 'assets/p-kiwi.jpg',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
+  { id: 'lima', image: 'assets/p-lima.jpg',            emoji: '🍋', name: 'Lima',               cat: 'frutas', unit: '1/2 kg', price: 89 },
+  { id: 'anana', image: 'assets/p-anana.jpg',           emoji: '🍍', name: 'Ananá',              cat: 'frutas', unit: 'c/u',    price: 199 },
+  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: '1/2 kg', price: 145 },
+  { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
+  { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
+  { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 99 },
+  { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva sin Semilla',    cat: 'frutas', unit: '1/2 kg', price: 189 },
+
+  // ---- Verduras ----
+  { id: 'ajo', image: 'assets/p-ajo.jpg',              emoji: '🧄', name: 'Ajo',               cat: 'verduras', unit: 'c/u',    price: 40 },
+  { id: 'acelga', image: 'assets/p-acelga.jpg',           emoji: '🥬', name: 'Acelga',            cat: 'verduras', unit: 'c/u',    price: 75 },
+  { id: 'apio', image: 'assets/p-apio.jpg',             emoji: '🌿', name: 'Apio',              cat: 'verduras', unit: 'atado',  price: 49 },
+  { id: 'albahaca', image: 'assets/p-albahaca.jpg',         emoji: '🌿', name: 'Albahaca',          cat: 'verduras', unit: 'bolsa',  price: 89 },
+  { id: 'boniato-criollo', image: 'assets/p-boniato-criollo.jpg',  emoji: '🍠', name: 'Boniato Criollo',   cat: 'verduras', unit: 'kg',     price: 109 },
+  { id: 'boniato-zanahoria', image: 'assets/p-boniato-zanahoria.jpg',emoji: '🍠', name: 'Boniato Zanahoria', cat: 'verduras', unit: 'kg',     price: 99 },
+  { id: 'brocoli', image: 'assets/p-brocoli.jpg',          emoji: '🥦', name: 'Brócoli',           cat: 'verduras', unit: 'c/u',    price: 89 },
+  { id: 'berenjena', image: 'assets/p-berenjena.jpg',        emoji: '🍆', name: 'Berenjena',         cat: 'verduras', unit: 'kg',     price: 199 },
+  { id: 'cebolla', image: 'assets/p-cebolla.jpg',          emoji: '🧅', name: 'Cebolla',           cat: 'verduras', unit: 'kg',     price: 69 },
+  { id: 'cebolla-colorada', image: 'assets/p-cebolla-colorada.jpg', emoji: '🧅', name: 'Cebolla Colorada',  cat: 'verduras', unit: 'kg',     price: 79 },
+  { id: 'cebolla-verdeo', image: 'assets/p-cebolla-verdeo.jpg',   emoji: '🧅', name: 'Cebolla de Verdeo', cat: 'verduras', unit: 'atado',  price: 99 },
+  { id: 'calabacin', image: 'assets/p-calabacin.jpg',        emoji: '🥒', name: 'Calabacín',         cat: 'verduras', unit: 'kg',     price: 55 },
+  { id: 'choclo', image: 'assets/p-choclo.jpg',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 89 },
+  { id: 'tomate-cherry', image: 'assets/p-tomate-cherry.jpg',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: '1/2 kg', price: 149 },
+  { id: 'chaucha', image: 'assets/p-chaucha.jpg',          emoji: '🫛', name: 'Chaucha',           cat: 'verduras', unit: '1/2 kg', price: 0 },
+  { id: 'coliflor', image: 'assets/p-coliflor.jpg',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 89 },
+  { id: 'espinaca', image: 'assets/p-espinaca.jpg',         emoji: '🥬', name: 'Espinaca',          cat: 'verduras', unit: 'atado',  price: 79 },
+  { id: 'jengibre', image: 'assets/p-jengibre.jpg',         emoji: '🌿', name: 'Jengibre',          cat: 'verduras', unit: '100 g',  price: 28 },
+  { id: 'lechuga', image: 'assets/p-lechuga.jpg',          emoji: '🥬', name: 'Lechuga',           cat: 'verduras', unit: 'c/u',    price: 59 },
+  { id: 'lechuga-crespa', image: 'assets/p-lechuga-crespa.jpg',   emoji: '🥬', name: 'Lechuga Crespa',    cat: 'verduras', unit: 'c/u',    price: 59 },
+  { id: 'morron-rojo', image: 'assets/p-morron-rojo.jpg',      emoji: '🫑', name: 'Morrón Rojo',       cat: 'verduras', unit: 'kg',     price: 299 },
+  { id: 'morron-verde', image: 'assets/p-morron-verde.jpg',     emoji: '🫑', name: 'Morrón Verde',      cat: 'verduras', unit: 'kg',     price: 199 },
+  { id: 'morron-amarillo', image: 'assets/p-morron-amarillo.jpg',  emoji: '🫑', name: 'Morrón Amarillo',   cat: 'verduras', unit: 'kg',     price: 0 },
+  { id: 'nabo', image: 'assets/p-nabo.jpg',             emoji: '🥬', name: 'Nabo',              cat: 'verduras', unit: 'c/u',    price: 20 },
+  { id: 'nabo-atado', image: 'assets/p-nabo-atado.jpg',       emoji: '🥬', name: 'Nabo (Atado 6-7u)', cat: 'verduras', unit: 'atado',  price: 150 },
+  { id: 'papa', image: 'assets/p-papa.jpeg',             emoji: '🥔', name: 'Papa',              cat: 'verduras', unit: 'kg',     price: 89 },
+  { id: 'puerro', image: 'assets/p-puerro.jpg',           emoji: '🧅', name: 'Puerro',            cat: 'verduras', unit: 'c/u',    price: 30 },
+  { id: 'pepino', image: 'assets/p-pepino.jpg',           emoji: '🥒', name: 'Pepino',            cat: 'verduras', unit: 'kg',     price: 159 },
+  { id: 'perejil', image: 'assets/p-perejil.jpg',          emoji: '🌿', name: 'Perejil',           cat: 'verduras', unit: 'atado',  price: 29 },
+  { id: 'remolacha', image: 'assets/p-remolacha.jpg',        emoji: '🌿', name: 'Remolacha',         cat: 'verduras', unit: 'atado',  price: 139 },
+  { id: 'rucula', image: 'assets/p-rucula.jpg',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
+  { id: 'repollo', image: 'assets/p-repollo.jpg',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 99 },
+  { id: 'rabanito', image: 'assets/p-rabanito.jpg',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
+  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 149 },
+  { id: 'tomate-perita', image: 'assets/p-tomate-perita.jpg',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
+  { id: 'zapallo-cabutia', image: 'assets/p-zapallo-cabutia.jpg',  emoji: '🎃', name: 'Zapallo Cabutiá',   cat: 'verduras', unit: 'kg',     price: 55 },
+  { id: 'zapallito', image: 'assets/p-zapallito.jpg',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 199 },
+  { id: 'zanahoria', image: 'assets/p-zanahoria.jpg',        emoji: '🥕', name: 'Zanahoria',         cat: 'verduras', unit: 'kg',     price: 69 },
+  { id: 'zucchini', image: 'assets/p-zucchini.jpg',         emoji: '🥒', name: 'Zucchini',          cat: 'verduras', unit: 'kg',     price: 199 },
+
+  // ---- Ofertas (precios especiales por tiempo limitado, reutilizan fotos existentes) ----
+  // parentId/parentQty relacionan cada oferta con su producto "padre" del catálogo
+  // general: el precio tachado se recalcula solo a partir del precio actual del padre
+  // (precio del padre × parentQty), así que si el admin actualiza el precio base,
+  // el tachado de la oferta se actualiza también sin tocar esta sección.
+  { id: 'oferta-boniato-zanahoria', image: 'assets/p-boniato-zanahoria.jpg', emoji: '🍠', name: 'Boniato Zanahoria', cat: 'ofertas', unit: '2 kg',      price: 189, parentId: 'boniato-zanahoria', parentQty: 2 },
+  { id: 'oferta-banana', image: 'assets/p-banana.jpg',                emoji: '🍌', name: 'Banana',            cat: 'ofertas', unit: '2 kg',      price: 139, parentId: 'banana', parentQty: 2 },
+  { id: 'oferta-espinaca', image: 'assets/p-espinaca.jpg',             emoji: '🥬', name: 'Espinaca',          cat: 'ofertas', unit: '2 atados',  price: 149, parentId: 'espinaca', parentQty: 2 },
+  { id: 'oferta-cebolla', image: 'assets/p-cebolla.jpg',              emoji: '🧅', name: 'Cebolla',           cat: 'ofertas', unit: '2 kg',      price: 119, parentId: 'cebolla', parentQty: 2 },
+  { id: 'oferta-huevos', image: 'assets/p-huevo-maple.jpg',           emoji: '🥚', name: 'Huevos',            cat: 'ofertas', unit: '2 maples',  price: 499, parentId: 'huevo-especial', parentQty: 2 },
+  { id: 'oferta-mandarina', image: 'assets/p-mandarina.jpg',           emoji: '🍊', name: 'Mandarina',         cat: 'ofertas', unit: '2 kg',      price: 120, parentId: 'mandarina', parentQty: 2 },
+  { id: 'oferta-naranja', image: 'assets/p-naranja.jpg',              emoji: '🍊', name: 'Naranja',           cat: 'ofertas', unit: '3 kg',      price: 149, parentId: 'naranja', parentQty: 3 },
+  { id: 'oferta-manzana-roja', image: 'assets/p-manzana-roja.jpg',        emoji: '🍎', name: 'Manzana Roja',      cat: 'ofertas', unit: '2 kg',      price: 249, parentId: 'manzana-roja', parentQty: 2 },
+  { id: 'oferta-manzana-verde', image: 'assets/p-manzana-verde.jpg',       emoji: '🍏', name: 'Manzana Verde',     cat: 'ofertas', unit: '2 kg',      price: 249, parentId: 'manzana-verde', parentQty: 2 },
+  { id: 'oferta-papa', image: 'assets/p-papa.jpeg',                  emoji: '🥔', name: 'Papa',              cat: 'ofertas', unit: '3 kg',      price: 245, parentId: 'papa', parentQty: 3 },
+  { id: 'oferta-papin', image: 'assets/p-papa.jpeg',                 emoji: '🥔', name: 'Papín',             cat: 'ofertas', unit: '3 kg',      price: 99 },
+  { id: 'oferta-palta', image: 'assets/p-palta.jpg',                 emoji: '🥑', name: 'Palta',             cat: 'ofertas', unit: '3 unidades', price: 179, parentId: 'palta', parentQty: 3 },
+  { id: 'oferta-pera', image: 'assets/p-pera.jpg',                  emoji: '🍐', name: 'Pera',              cat: 'ofertas', unit: '2 kg',      price: 209, parentId: 'pera', parentQty: 2 },
+  { id: 'oferta-puerro', image: 'assets/p-puerro.jpg',                emoji: '🧅', name: 'Puerro',            cat: 'ofertas', unit: '6 unidades', price: 179, parentId: 'puerro', parentQty: 6 },
+  { id: 'oferta-zanahoria', image: 'assets/p-zanahoria.jpg',            emoji: '🥕', name: 'Zanahoria',         cat: 'ofertas', unit: '2 kg',      price: 129, parentId: 'zanahoria', parentQty: 2 },
+  { id: 'oferta-zucchini', image: 'assets/p-zucchini.jpg',             emoji: '🥒', name: 'Zucchini',          cat: 'ofertas', unit: '2 kg',      price: 378, parentId: 'zucchini', parentQty: 2 },
+  { id: 'oferta-acelga', image: 'assets/p-acelga.jpg',                emoji: '🥬', name: 'Acelga',            cat: 'ofertas', unit: '2 atados',  price: 139, parentId: 'acelga', parentQty: 2 },
+  { id: 'oferta-arandanos', image: 'assets/p-arandanos.jpg',            emoji: '🫐', name: 'Arándanos',         cat: 'ofertas', unit: '2 petacas', price: 299, parentId: 'arandanos', parentQty: 2 },
+  { id: 'oferta-tomate', image: 'assets/p-tomate.jpg',                emoji: '🍅', name: 'Tomate',            cat: 'ofertas', unit: '2 kg',      price: 289, parentId: 'tomate', parentQty: 2 },
+
+  // ---- Terra Verde (línea de productos orgánicos elaborados) ----
+  {
+    id: 'tv-aceite', name: 'Aceite de Oliva Virgen Extra Orgánico', cat: 'terra-verde',
+    unit: '1 L', price: 1050, image: 'assets/terra-aceite-oliva.jpg',
+    desc: 'Sabor intenso, aroma fresco. Variedad Picual.',
+  },
+  {
+    id: 'tv-coco', image: 'assets/p-tv-coco.jpg', name: 'Aceite de Coco Orgánico', cat: 'terra-verde',
+    unit: '200 g', price: 260, emoji: '🥥',
+  },
+  {
+    id: 'tv-vinagre', name: 'Vinagre de Manzana Orgánico', cat: 'terra-verde',
+    unit: '1 L', price: 460, image: 'assets/terra-vinagre-manzana.jpg',
+    desc: 'Con cultivo madre, sin filtrar ni pasteurizar.',
+  },
+  {
+    id: 'tv-yerba', name: 'Yerba Mate Orgánica', cat: 'terra-verde',
+    unit: '1 kg', price: 260, image: 'assets/terra-yerba-mate.jpg',
+    desc: 'Nativa, 100% natural. Sabor original.',
+  },
+
+  // ---- Canastas (armadas, a precio fijo · envío gratis) ----
+  {
+    id: 'canasta-esencial', name: 'Canasta Esencial', cat: 'canastas',
+    unit: 'caja', price: 1190, image: 'assets/p-canasta-esencial.jpg',
+    desc: 'Incluye: 1 ajo · 1k banana · ½k boniato · 1 calabacín · ½k cebolla · 15 huevos especiales · rúcula · acelga · ½k limón · 1k naranja · 1k papa · 1k mandarina · 1k manzana red · ½k tomate · ½k zanahoria. Envío gratis.',
+  },
+  {
+    id: 'canasta-inteligente', name: 'Canasta Inteligente', cat: 'canastas',
+    unit: 'caja', price: 990, image: 'assets/p-canasta-inteligente.jpg',
+    desc: 'Incluye: 1 ajo · brócoli · 1k banana · 1k boniato · 1k cebolla · lechuga · 1k naranja · 1k mandarina · 1k manzana · ½k morrón · 1k papa · ½k zanahoria · calabacín · 1k berenjena · rúcula. Envío gratis.',
+  },
+  {
+    id: 'canasta-familiar', name: 'Canasta Familiar', cat: 'canastas',
+    unit: 'caja', price: 1590, image: 'assets/p-canasta-familiar.jpg',
+    desc: 'Incluye: 2 acelgas · 2k banana · 1k boniato · 1 calabacín · 1k cebolla · 1 lechuga crespa · ½k limón · 1k naranja · 1k manzana roja premium · ½k manzana verde premium · ½k morrón · 1k papa rosada premium · 1k tomate · 6 puerros · ½k zanahoria · ½k zapallito · 1k mandarina. Envío gratis.',
+  },
+
+  // ---- Otros (hierbas, miel, quesos) ----
+  { id: 'ciboulette', image: 'assets/p-ciboulette.jpg',      emoji: '🌿', name: 'Ciboulette',        cat: 'otros', unit: 'atado', price: 99 },
+  { id: 'brotes-soja', image: 'assets/p-brotes-soja.jpg',     emoji: '🌱', name: 'Brotes de Soja',    cat: 'otros', unit: 'bolsa', price: 249 },
+  { id: 'kale', image: 'assets/p-kale.jpg',            emoji: '🥬', name: 'Kale',              cat: 'otros', unit: 'atado', price: 65 },
+  { id: 'cilantro', image: 'assets/p-cilantro.jpg',        emoji: '🌿', name: 'Cilantro',          cat: 'otros', unit: 'atado', price: 99 },
+  { id: 'romero', image: 'assets/p-romero.jpg',          emoji: '🌿', name: 'Romero',            cat: 'otros', unit: 'atado', price: 65 },
+  { id: 'laurel', image: 'assets/p-laurel.jpg',          emoji: '🌿', name: 'Laurel',            cat: 'otros', unit: 'atado', price: 60 },
+  { id: 'miel-500', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1/2 kg', price: 175 },
+  { id: 'miel-1kg', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1 kg',   price: 299 },
+  { id: 'queso-colonia', image: 'assets/p-queso-colonia.jpg',   emoji: '🧀', name: 'Queso Colonia',     cat: 'otros', unit: '1/2 kg', price: 259 },
+  { id: 'queso-parmesano', image: 'assets/p-queso-parmesano.jpg', emoji: '🧀', name: 'Queso Parmesano',   cat: 'otros', unit: '1/2 kg', price: 330 },
+
+  // ---- Congelados ----
+  { id: 'frutilla-congelada', image: 'assets/p-frutilla-congelada.jpg', emoji: '🍓', name: 'Frutillas Congeladas', cat: 'congelados', unit: '1 kg', price: 279 },
+
+  // ---- Huevos ----
+  // Tres productos distintos (Jumbo, Extra, Especial). Cada uno con su única
+  // opción de cantidad: maple de 30 u (preseleccionado) o de 15 u.
+  {
+    id: 'huevo-jumbo', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Jumbo', cat: 'huevos',
+    defaultVariant: '30u',
+    variants: [
+      { key: '30u', label: '30 u', unit: 'maple 30 u', price: 349 },
+      { key: '15u', label: '15 u', unit: 'maple 15 u', price: 189 },
+    ],
+  },
+  {
+    id: 'huevo-extra', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo Extra', cat: 'huevos',
+    defaultVariant: '30u',
+    variants: [
+      { key: '30u', label: '30 u', unit: 'maple 30 u', price: 309 },
+      { key: '15u', label: '15 u', unit: 'maple 15 u', price: 169 },
+    ],
+  },
+  {
+    id: 'huevo-especial', image: 'assets/p-huevo-maple.jpg', emoji: '🥚', name: 'Huevo especial', cat: 'huevos',
+    defaultVariant: '30u',
+    variants: [
+      { key: '30u', label: '30 u', unit: 'maple 30 u', price: 289 },
+      { key: '15u', label: '15 u', unit: 'maple 15 u', price: 159 },
+    ],
+  },
+
+  // ---- Especias ----
+  // Cada especia es un único producto con 3 presentaciones seleccionables.
+  {
+    id: 'especia-ajo-molido', image: 'assets/p-especia-ajo-molido.jpg', emoji: '🧂', name: 'Ajo Molido', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 149 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 99 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 85 },
+    ],
+  },
+  {
+    id: 'especia-canela-rama', image: 'assets/p-especia-canela-rama.jpg', emoji: '🧂', name: 'Canela en Rama', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 540 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 295 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 0 },
+    ],
+  },
+  {
+    id: 'especia-canela-molida', image: 'assets/p-especia-canela-molida.jpg', emoji: '🧂', name: 'Canela Molida', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 395 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 215 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 138 },
+    ],
+  },
+  {
+    id: 'especia-cond-verde', image: 'assets/p-especia-cond-verde.jpg', emoji: '🧂', name: 'Condimento Verde', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 244 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 130 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 85 },
+    ],
+  },
+  {
+    id: 'especia-curcuma', image: 'assets/p-especia-curcuma.jpg', emoji: '🧂', name: 'Cúrcuma', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 268 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 139 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 46 },
+    ],
+  },
+  {
+    id: 'especia-nuez-moscada', image: 'assets/p-especia-nuez-moscada.jpg', emoji: '🧂', name: 'Nuez Moscada', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 519 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 275 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 99 },
+    ],
+  },
+  {
+    id: 'especia-oregano', image: 'assets/p-especia-oregano.jpg', emoji: '🧂', name: 'Orégano', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 130 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 68 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 49 },
+    ],
+  },
+  {
+    id: 'especia-pimenton', image: 'assets/p-especia-pimenton.jpg', emoji: '🧂', name: 'Pimentón', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 195 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 105 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 47 },
+    ],
+  },
+  {
+    id: 'especia-pimienta-negra', image: 'assets/p-especia-pimienta-negra.jpg', emoji: '🧂', name: 'Pimienta Negra Molida', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 260 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 135 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 55 },
+    ],
+  },
+  {
+    id: 'especia-tomillo', image: 'assets/p-especia-tomillo.jpg', emoji: '🧂', name: 'Tomillo', cat: 'especias',
+    defaultVariant: '500g',
+    variants: [
+      { key: '500g', label: '1/2 kilo', unit: '1/2 kg', price: 170 },
+      { key: '250g', label: '250 grs',  unit: '250 g',  price: 90 },
+      { key: '50g',  label: '50 grs',   unit: '50 g',   price: 45 },
+    ],
+  },
+
+  // ---- Sal Marina (empresa asociada) ----
+  { id: 'sal-pimienta-200', image: 'assets/p-sal-pimienta-200.jpg', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '200 g', price: 199 },
+  { id: 'sal-pimienta-500', image: 'assets/p-sal-pimienta-500.jpg', emoji: '🧂', name: 'Sal con Pimienta Negra (4 granos)', cat: 'sal-marina', unit: '500 g', price: 420 },
+  { id: 'sal-ajo', image: 'assets/p-sal-ajo.jpg',          emoji: '🧂', name: 'Sal con Ajo',                       cat: 'sal-marina', unit: '180 g', price: 330 },
+  { id: 'sal-ahumada', image: 'assets/p-sal-ahumada.jpg',      emoji: '🧂', name: 'Sal Ahumada Ancestral',             cat: 'sal-marina', unit: '150 g', price: 410 },
+  { id: 'sal-oro', image: 'assets/p-sal-oro.jpg',          emoji: '🧂', name: 'Sal de Oro',                        cat: 'sal-marina', unit: '150 g', price: 359 },
+];
+/* @DEFAULT_PRODUCTS:end */
+
+const PRODUCTS_STORAGE_KEY = 'tuhuerta_products_v1';
+// Subir este número cada vez que cambie la forma de DEFAULT_PRODUCTS (ej.: se agregan
+// "variants"). Así, datos guardados en localStorage con una forma vieja se descartan
+// solos en vez de pisar los productos nuevos del código con datos incompletos.
+const PRODUCTS_DATA_VERSION = 4;
+
+// Marca de tiempo de esta "publicación" del archivo. Como el sitio no tiene base de
+// datos, esta fecha es la que dice qué versión es la más nueva: la que el admin
+// descarga y sube a GitHub queda sellada con la fecha de ese momento. Al cargar,
+// comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
+// la más reciente (ver loadProducts). El panel de admin regenera este valor al
+// descargar el archivo — no lo edites a mano.
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-07-20T18:00:00.000Z';
+
+// Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
+function _productsTime(iso) {
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? 0 : t;
 }
 
-function applyWeightOptions(products) {
-  products.forEach(p => {
-    if (!WEIGHT_OPTION_IDS.has(p.id)) return;
-    if (Array.isArray(p.variants) || Array.isArray(p.variantGroups)) return;
-    const perKilo = perKiloPrice(p);
-    p.variants = [
-      { key: 'unidad', label: 'Unidad', unit: 'unidad', price: Math.round(perKilo), approx: true },
-      { key: 'medio',  label: '½ kg',   unit: '½ kg',   price: Math.round(perKilo / 2) },
-      { key: 'kilo',   label: '1 kg',   unit: 'kg',     price: Math.round(perKilo) },
-    ];
-    p.defaultVariant = 'kilo';
-  });
-}
-applyWeightOptions(PRODUCTS);
-
-let cart = {};            // cartKey -> cantidad
-// productId -> selección de variante. String para productos con "variants" (una sola
-// opción, ej.: tamaño de especia). Objeto {grupo: opción} para productos con
-// "variantGroups" (varias opciones independientes, ej.: cantidad + calidad de huevos).
-let selectedVariant = {};
-let search = '';
-let lastFocused = null;
-
-const $ = id => document.getElementById(id);
-const productById = id => PRODUCTS.find(p => p.id === id);
-const matches = p => p.name.toLowerCase().includes(search);
-
-// ---------- Variantes de una sola opción (ej.: especias por tamaño) ----------
-function activeVariantKey(p) {
-  if (!p.variants) return null;
-  return selectedVariant[p.id] || p.defaultVariant || p.variants[0].key;
-}
-
-function activeVariant(p) {
-  const key = activeVariantKey(p);
-  return key ? p.variants.find(v => v.key === key) : null;
-}
-
-// ---------- Variantes de varios grupos independientes (ej.: huevos por cantidad y calidad) ----------
-function selectedGroupOptions(p) {
-  const sel = (selectedVariant[p.id] && typeof selectedVariant[p.id] === 'object') ? selectedVariant[p.id] : {};
-  const result = {};
-  p.variantGroups.forEach(g => { result[g.key] = sel[g.key] || g.default || g.options[0].key; });
-  return result;
-}
-
-function groupPriceKey(p, options) {
-  return p.variantGroups.map(g => options[g.key]).join('|');
-}
-
-function cartKeyFor(p) {
-  if (Array.isArray(p.variantGroups)) {
-    return `${p.id}::${groupPriceKey(p, selectedGroupOptions(p))}`;
-  }
-  const key = activeVariantKey(p);
-  return key ? `${p.id}::${key}` : p.id;
-}
-
-// Resuelve una clave del carrito (con o sin variante) a sus datos de nombre/unidad/precio.
-function resolveCartLine(cartKey) {
-  const sep = cartKey.indexOf('::');
-  const pid = sep === -1 ? cartKey : cartKey.slice(0, sep);
-  const rest = sep === -1 ? null : cartKey.slice(sep + 2);
-  const p = productById(pid);
-
-  if (rest !== null && Array.isArray(p.variantGroups)) {
-    const parts = rest.split('|');
-    const labels = p.variantGroups.map((g, i) => {
-      const opt = g.options.find(o => o.key === parts[i]);
-      return opt ? opt.label : parts[i];
-    });
-    return { product: p, name: p.name, unit: `${p.unit} · ${labels.join(', ')}`, price: p.prices[rest] };
-  }
-
-  const variant = rest !== null ? p.variants.find(v => v.key === rest) : null;
-  return {
-    product: p,
-    name: p.name,
-    unit: variant ? variant.unit : p.unit,
-    price: variant ? variant.price : p.price,
-  };
-}
-
-// ---------- Render del catálogo ----------
-function renderGrids() {
-  document.querySelectorAll('.product-grid').forEach(grid => {
-    const list = PRODUCTS.filter(p => p.cat === grid.dataset.cat && matches(p));
-    grid.innerHTML = list.map(cardHTML).join('');
-  });
-  bindCards();
-  toggleEmptyState();
-}
-
-function cardHTML(p) {
-  const hasGroups = Array.isArray(p.variantGroups) && p.variantGroups.length > 0;
-  const hasVariants = !hasGroups && Array.isArray(p.variants) && p.variants.length > 0;
-  const variant = hasVariants ? activeVariant(p) : null;
-  const groupSelection = hasGroups ? selectedGroupOptions(p) : null;
-  const cartKey = cartKeyFor(p);
-  const price = hasGroups ? p.prices[groupPriceKey(p, groupSelection)] : (hasVariants ? variant.price : p.price);
-  const unit = hasVariants ? variant.unit : p.unit;
-  const qty = cart[cartKey] || 0;
-
-  const parent = p.parentId ? productById(p.parentId) : null;
-  const parentUnitPrice = parent
-    ? (Array.isArray(parent.variants) && parent.variants.length
-        ? (parent.variants.find(v => v.key === parent.defaultVariant) || parent.variants[0]).price
-        : parent.price)
-    : 0;
-  const originalPrice = parent ? parentUnitPrice * (p.parentQty || 1) : 0;
-  const priceWasHTML = (originalPrice > price)
-    ? `<span class="price-was">$${originalPrice}</span>` : '';
-
-  const priceHTML = price > 0
-    ? `${priceWasHTML}<span class="price">$${price}</span>`
-    : `<span class="price consult">Precio a consultar</span>`;
-
-  const ofertaBadge = p.cat === 'ofertas' ? `<span class="oferta-badge">Oferta</span>` : '';
-
-  const action = qty > 0
-    ? `<div class="qty-control" role="group" aria-label="Cantidad de ${p.name}">
-         <button type="button" data-id="${cartKey}" data-d="-1" aria-label="Quitar una unidad de ${p.name}">−</button>
-         <span class="qty" aria-live="polite">${qty}</span>
-         <button type="button" data-id="${cartKey}" data-d="1" aria-label="Agregar una unidad de ${p.name}">+</button>
-       </div>`
-    : `<button type="button" class="add-btn" data-add="${cartKey}">Agregar<span class="visually-hidden"> ${p.name} al pedido</span></button>`;
-
-  const visual = p.image
-    ? `<img class="card-img" src="${p.image}" alt="" loading="lazy">`
-    : `<span class="emoji" aria-hidden="true">${p.emoji}</span>`;
-  const desc = p.desc ? `<p class="card-desc">${p.desc}</p>` : '';
-  const approxNote = (hasVariants && variant && variant.approx)
-    ? `<p class="approx-note">Precio de referencia por kilo · se cobra según el peso real</p>`
-    : '';
-
-  let variantOptions = '';
-  if (hasVariants) {
-    variantOptions = `
-      <div class="variant-options" role="radiogroup" aria-label="Presentación de ${p.name}">
-        ${p.variants.map(v => `
-          <label class="variant-option">
-            <input type="radio" name="variant-${p.id}" value="${v.key}" data-variant-product="${p.id}" ${v.key === variant.key ? 'checked' : ''}>
-            <span>${v.label}</span>
-          </label>`).join('')}
-      </div>`;
-  } else if (hasGroups) {
-    variantOptions = p.variantGroups.map(g => `
-      <div class="variant-options" role="radiogroup" aria-label="${g.label} de ${p.name}">
-        <span class="variant-group-label">${g.label}:</span>
-        ${g.options.map(o => `
-          <label class="variant-option">
-            <input type="radio" name="variant-${p.id}-${g.key}" value="${o.key}"
-              data-variant-product="${p.id}" data-variant-group="${g.key}"
-              ${groupSelection[g.key] === o.key ? 'checked' : ''}>
-            <span>${o.label}</span>
-          </label>`).join('')}
-      </div>`).join('');
-  }
-
-  return `
-    <li class="card">
-      ${ofertaBadge}
-      ${visual}
-      <h3>${p.name}</h3>
-      <span class="unit">por ${unit}</span>
-      ${desc}
-      ${variantOptions}
-      ${priceHTML}
-      ${approxNote}
-      <div class="card-action">${action}</div>
-    </li>`;
-}
-
-function bindCards() {
-  document.querySelectorAll('[data-add]').forEach(b =>
-    b.addEventListener('click', () => {
-      const key = b.dataset.add;
-      cart[key] = 1;
-      refresh();
-      if (key.endsWith('::unidad')) showApproxPopup(key);
-    }));
-  document.querySelectorAll('.card-action [data-d]').forEach(b =>
-    b.addEventListener('click', () => changeQty(b.dataset.id, parseInt(b.dataset.d))));
-  document.querySelectorAll('input[data-variant-product]').forEach(r =>
-    r.addEventListener('change', () => {
-      const pid = r.dataset.variantProduct;
-      if (r.dataset.variantGroup) {
-        selectedVariant[pid] = (selectedVariant[pid] && typeof selectedVariant[pid] === 'object') ? selectedVariant[pid] : {};
-        selectedVariant[pid][r.dataset.variantGroup] = r.value;
-      } else {
-        selectedVariant[pid] = r.value;
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const usable = parsed && parsed.version === PRODUCTS_DATA_VERSION
+        && Array.isArray(parsed.products) && parsed.products.length;
+      // Solo usamos los cambios guardados en este navegador si son MÁS NUEVOS que el
+      // archivo publicado. Si el archivo (subido a GitHub) es más reciente o igual,
+      // gana el archivo: así una publicación hecha desde otro dispositivo pisa a un
+      // localStorage viejo, y nunca al revés.
+      if (usable && _productsTime(parsed.updatedAt) > _productsTime(DEFAULT_PRODUCTS_UPDATED_AT)) {
+        return parsed.products;
       }
-      renderGrids();
-    }));
+    }
+  } catch (e) { /* localStorage no disponible o dato corrupto: usamos los valores por defecto */ }
+  return DEFAULT_PRODUCTS.map(p => ({ ...p }));
 }
 
-function changeQty(cartKey, d) {
-  cart[cartKey] = (cart[cartKey] || 0) + d;
-  if (cart[cartKey] <= 0) delete cart[cartKey];
-  refresh();
+function saveProducts(products, updatedAt) {
+  const stamp = updatedAt || new Date().toISOString();
+  localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify({
+    version: PRODUCTS_DATA_VERSION, updatedAt: stamp, products,
+  }));
+  return stamp;
 }
 
-function toggleEmptyState() {
-  const visible = PRODUCTS.filter(matches);
-  $('emptySearch').hidden = visible.length > 0;
-  document.querySelectorAll('.cat-section').forEach(sec => {
-    const cat = sec.querySelector('.product-grid').dataset.cat;
-    sec.hidden = !PRODUCTS.some(p => p.cat === cat && matches(p));
-  });
-  $('resultCount').textContent = search
-    ? `${visible.length} producto${visible.length === 1 ? '' : 's'} encontrado${visible.length === 1 ? '' : 's'}`
-    : '';
+function resetProducts() {
+  localStorage.removeItem(PRODUCTS_STORAGE_KEY);
 }
 
-// ---------- Carrito ----------
-function updateCartUI() {
-  const keys = Object.keys(cart);
-  const count = keys.reduce((s, k) => s + cart[k], 0);
-  $('cartCount').textContent = count;
-  $('cartCountSr').textContent = `${count} producto${count === 1 ? '' : 's'} en el pedido`;
-
-  const cont = $('cartItems');
-  if (keys.length === 0) {
-    cont.innerHTML = '<p class="empty-msg">Todavía no agregaste productos.<br>Volvé al catálogo y sumá lo que necesites.</p>';
-  } else {
-    cont.innerHTML = keys.map(key => {
-      const line = resolveCartLine(key);
-      const p = line.product;
-      const visual = p.image
-        ? `<img class="ci-img" src="${p.image}" alt="" loading="lazy">`
-        : `<span class="ci-emoji" aria-hidden="true">${p.emoji}</span>`;
-      return `
-        <div class="cart-item">
-          ${visual}
-          <div class="ci-info">
-            <h4>${line.name}</h4>
-            <span>${line.price > 0 ? '$' + line.price : 'a consultar'} · por ${line.unit}</span>
-            ${line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : ''}
-          </div>
-          <div class="ci-controls">
-            <button type="button" data-id="${key}" data-d="-1" aria-label="Quitar una unidad de ${line.name}">−</button>
-            <span class="ci-qty">${cart[key]}</span>
-            <button type="button" data-id="${key}" data-d="1" aria-label="Agregar una unidad de ${line.name}">+</button>
-            <button type="button" class="ci-remove" data-remove="${key}" aria-label="Eliminar ${line.name} del pedido">✕</button>
-          </div>
-        </div>`;
-    }).join('');
-    cont.querySelectorAll('[data-d]').forEach(b =>
-      b.addEventListener('click', () => changeQty(b.dataset.id, parseInt(b.dataset.d))));
-    cont.querySelectorAll('[data-remove]').forEach(b =>
-      b.addEventListener('click', () => { delete cart[b.dataset.remove]; refresh(); }));
+function hasCustomProducts() {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    return !!(parsed && parsed.version === PRODUCTS_DATA_VERSION
+      && _productsTime(parsed.updatedAt) > _productsTime(DEFAULT_PRODUCTS_UPDATED_AT));
+  } catch (e) {
+    return false;
   }
-
-  const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
-  const hasConsult = keys.some(k => resolveCartLine(k).price === 0);
-  $('cartTotal').textContent = '$' + total + (hasConsult ? ' +' : '');
-  $('checkoutBtn').disabled = keys.length === 0;
-
-  // Barra resumen (móvil)
-  const bar = $('summaryBar');
-  bar.hidden = keys.length === 0;
-  $('summaryCount').textContent = `${count} producto${count === 1 ? '' : 's'}`;
-  $('summaryTotal').textContent = '$' + total + (hasConsult ? ' +' : '');
 }
-
-function refresh() { renderGrids(); updateCartUI(); }
-
-// ---------- Armar el mensaje de WhatsApp ----------
-function buildOrderMessage({ nombre, direccion, notas, pago }) {
-  const keys = Object.keys(cart);
-  const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
-
-  let msg = `¡Hola Tu Huerta! Soy ${nombre} y quiero hacer este pedido:\n\n`;
-  keys.forEach(k => {
-    const line = resolveCartLine(k);
-    const approx = line.unit === 'unidad' ? ' (ref. por kilo, se ajusta al peso)' : '';
-    const sub = line.price > 0 ? ` — $${line.price * cart[k]}${approx}` : ' — a consultar';
-    msg += `• ${cart[k]} x ${line.name} (${line.unit})${sub}\n`;
-  });
-  msg += `\nTotal aprox: $${total}\n`;
-  msg += `\nMétodo de pago: ${pago}\n`;
-  msg += `Entrega en: ${direccion}\n`;
-  if (notas) msg += `Comentarios: ${notas}\n`;
-  msg += `\n¿Coordinamos día y horario de entrega?`;
-  return msg;
-}
-
-// ---------- Previsualización del pedido ----------
-const previewOverlay = $('previewOverlay');
-const previewModal = $('previewModal');
-let previewLastFocused = null;
-let pendingOrder = null; // datos de entrega confirmados por el form, listos para enviar
-
-function openPreview(orderData) {
-  pendingOrder = orderData;
-  const keys = Object.keys(cart);
-  const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
-  const hasConsult = keys.some(k => resolveCartLine(k).price === 0);
-
-  $('previewItems').innerHTML = keys.map(k => {
-    const line = resolveCartLine(k);
-    const approx = line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : '';
-    const sub = line.price > 0 ? `$${line.price * cart[k]}` : 'a consultar';
-    return `
-      <li class="preview-item">
-        <div class="ci-info">
-          <h4>${cart[k]} x ${line.name}</h4>
-          <span>por ${line.unit}</span>
-          ${approx}
-        </div>
-        <strong>${sub}</strong>
-      </li>`;
-  }).join('');
-
-  $('previewTotal').textContent = '$' + total + (hasConsult ? ' +' : '');
-
-  const dl = $('previewDelivery');
-  dl.innerHTML = `
-    <dt>Nombre</dt><dd>${orderData.nombre}</dd>
-    <dt>Dirección</dt><dd>${orderData.direccion}</dd>
-    ${orderData.notas ? `<dt>Comentarios</dt><dd>${orderData.notas}</dd>` : ''}
-    <dt>Pago</dt><dd>${orderData.pago}</dd>`;
-
-  previewLastFocused = document.activeElement;
-  previewOverlay.hidden = false;
-  previewModal.hidden = false;
-  $('previewClose').focus();
-}
-
-function closePreview() {
-  previewOverlay.hidden = true;
-  previewModal.hidden = true;
-  if (previewLastFocused) previewLastFocused.focus();
-}
-
-$('previewClose').addEventListener('click', closePreview);
-$('previewEdit').addEventListener('click', closePreview);
-previewOverlay.addEventListener('click', closePreview);
-document.addEventListener('keydown', e => {
-  if (!previewModal.hidden && e.key === 'Escape') closePreview();
-});
-
-$('previewConfirm').addEventListener('click', () => {
-  if (!pendingOrder) return;
-  const msg = buildOrderMessage(pendingOrder);
-  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
-  closePreview();
-});
-
-// ---------- Revisar pedido (paso previo al envío) ----------
-$('orderForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const keys = Object.keys(cart);
-  if (keys.length === 0) return;
-
-  openPreview({
-    nombre: $('fName').value.trim(),
-    direccion: $('fAddress').value.trim(),
-    notas: $('fNotes').value.trim(),
-    // El submit del form nativo ya exige que haya un método de pago elegido (required),
-    // así que acá siempre hay uno seleccionado.
-    pago: document.querySelector('input[name="pago"]:checked').value,
-  });
-});
-
-// ---------- Buscador ----------
-$('searchInput').addEventListener('input', e => {
-  search = e.target.value.toLowerCase().trim();
-  renderGrids();
-});
-
-// ---------- Drawer accesible ----------
-const drawer = $('cartDrawer');
-const overlay = $('cartOverlay');
-
-function openCart() {
-  lastFocused = document.activeElement;
-  drawer.hidden = false;
-  overlay.hidden = false;
-  document.body.style.overflow = 'hidden';
-  $('closeCart').focus();
-}
-function closeCart() {
-  drawer.hidden = true;
-  overlay.hidden = true;
-  document.body.style.overflow = '';
-  if (lastFocused) lastFocused.focus();
-}
-
-$('cartBtn').addEventListener('click', openCart);
-$('summaryOpen').addEventListener('click', openCart);
-$('closeCart').addEventListener('click', closeCart);
-overlay.addEventListener('click', closeCart);
-
-document.addEventListener('keydown', e => {
-  if (drawer.hidden) return;
-  if (e.key === 'Escape') { closeCart(); return; }
-  // Foco atrapado dentro del drawer
-  if (e.key === 'Tab') {
-    const focusables = drawer.querySelectorAll('button:not(:disabled), input, textarea, a[href]');
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
-});
-
-// ---------- Aviso "compra por unidad" ----------
-// Al agregar una unidad, avisamos que el precio es de referencia (por kilo) y que
-// al momento de pagar se cobra según el peso real, así que se paga menos.
-const approxOverlay = $('approxOverlay');
-const approxModal = $('approxModal');
-let approxLastFocused = null;
-
-function showApproxPopup(cartKey) {
-  const line = resolveCartLine(cartKey);
-  const priceTxt = line.price > 0
-    ? `El precio que ves ($${line.price}) es una referencia basada en el precio por kilo. `
-    : '';
-  $('approxTitle').textContent = `Agregaste ${line.name} por unidad`;
-  $('approxText').textContent = `${priceTxt}Al momento de pagar te cobramos según el peso real de la unidad, así que vas a pagar menos.`;
-  approxLastFocused = document.activeElement;
-  approxOverlay.hidden = false;
-  approxModal.hidden = false;
-  $('approxOk').focus();
-}
-
-function closeApproxPopup() {
-  approxOverlay.hidden = true;
-  approxModal.hidden = true;
-  if (approxLastFocused) approxLastFocused.focus();
-}
-
-$('approxOk').addEventListener('click', closeApproxPopup);
-approxOverlay.addEventListener('click', closeApproxPopup);
-document.addEventListener('keydown', e => {
-  if (!approxModal.hidden && e.key === 'Escape') closeApproxPopup();
-});
-
-refresh();
