@@ -80,6 +80,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'zapallito', image: 'assets/p-zapallito.jpg',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 199 },
   { id: 'zanahoria', image: 'assets/p-zanahoria.jpg',        emoji: '🥕', name: 'Zanahoria',         cat: 'verduras', unit: 'kg',     price: 69 },
   { id: 'zucchini', image: 'assets/p-zucchini.jpg',         emoji: '🥒', name: 'Zucchini',          cat: 'verduras', unit: 'kg',     price: 199 },
+  { id: 'inspirada', image: 'assets/p-inspirada.jpeg',         emoji: '🥬', name: 'inspirada',          cat: 'verduras', unit: 'c/u',     price: 190 },
 
   // ---- Ofertas (precios especiales por tiempo limitado, reutilizan fotos existentes) ----
   // parentId/parentQty relacionan cada oferta con su producto "padre" del catálogo
@@ -184,6 +185,13 @@ const DEFAULT_PRODUCTS = [
     variants: [
       { key: '30u', label: '30 u', unit: 'maple 30 u', price: 289 },
       { key: '15u', label: '15 u', unit: 'maple 15 u', price: 159 },
+    ],
+  },
+  {
+    id: 'huevo-blanco', image: 'assets/p-huevo-maple-blanco.jpeg', emoji: '🥚', name: 'Huevo blanco', cat: 'huevos',
+    defaultVariant: '30u',
+    variants: [
+      { key: '30u', label: '30 u', unit: 'maple 30 u', price: 289 },
     ],
   },
 
