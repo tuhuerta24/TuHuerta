@@ -34,10 +34,10 @@ const DEFAULT_PRODUCTS = [
   { id: 'kiwi', image: 'assets/p-kiwi.jpg',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
   { id: 'lima', image: 'assets/p-lima.jpg',            emoji: '🍋', name: 'Lima',               cat: 'frutas', unit: '1/2 kg', price: 89 },
   { id: 'anana', image: 'assets/p-anana.jpg',           emoji: '🍍', name: 'Ananá',              cat: 'frutas', unit: 'c/u',    price: 199 },
-  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: '1/2 kg', price: 145 },
+  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: '1/2 kg', price: 239 },
   { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
   { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
-  { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 99 },
+  { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 229 },
   { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva sin Semilla',    cat: 'frutas', unit: '1/2 kg', price: 189 },
 
   // ---- Verduras ----
@@ -53,7 +53,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'cebolla-colorada', image: 'assets/p-cebolla-colorada.jpg', emoji: '🧅', name: 'Cebolla Colorada',  cat: 'verduras', unit: 'kg',     price: 89 },
   { id: 'cebolla-verdeo', image: 'assets/p-cebolla-verdeo.jpg',   emoji: '🧅', name: 'Cebolla de Verdeo', cat: 'verduras', unit: 'atado',  price: 99 },
   { id: 'calabacin', image: 'assets/p-calabacin.jpg',        emoji: '🥒', name: 'Calabacín',         cat: 'verduras', unit: 'kg',     price: 65 },
-  { id: 'choclo', image: 'assets/p-choclo.jpg',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 69 },
+  { id: 'choclo', image: 'assets/p-choclo.jpg',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 89 },
   { id: 'tomate-cherry', image: 'assets/p-tomate-cherry.jpg',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: '1/2 kg', price: 210 },
   { id: 'chaucha', image: 'assets/p-chaucha.jpg',          emoji: '🫛', name: 'Chaucha',           cat: 'verduras', unit: '1/2 kg', price: 249 },
   { id: 'coliflor', image: 'assets/p-coliflor.jpg',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 99 },
@@ -75,7 +75,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'rucula', image: 'assets/p-rucula.jpg',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
   { id: 'repollo', image: 'assets/p-repollo.jpg',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 99 },
   { id: 'rabanito', image: 'assets/p-rabanito.jpg',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
-  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 199 },
+  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 269 },
   { id: 'tomate-perita', image: 'assets/p-tomate-perita.jpg',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
   { id: 'zapallo-cabutia', image: 'assets/p-zapallo-cabutia.jpg',  emoji: '🎃', name: 'Zapallo Cabutiá',   cat: 'verduras', unit: 'kg',     price: 65 },
   { id: 'zapallito', image: 'assets/p-zapallito.jpg',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 199 },
@@ -106,7 +106,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'oferta-zucchini', image: 'assets/p-zucchini.jpg',             emoji: '🥒', name: 'Zucchini',          cat: 'ofertas', unit: '2 kg',      price: 378, parentId: 'zucchini', parentQty: 2 },
   { id: 'oferta-acelga', image: 'assets/p-acelga.jpg',                emoji: '🥬', name: 'Acelga',            cat: 'ofertas', unit: '2 atados',  price: 139, parentId: 'acelga', parentQty: 2 },
   { id: 'oferta-arandanos', image: 'assets/p-arandanos.jpg',            emoji: '🫐', name: 'Arándanos',         cat: 'ofertas', unit: '2 petacas', price: 299, parentId: 'arandanos', parentQty: 2 },
-  { id: 'oferta-tomate', image: 'assets/p-tomate.jpg',                emoji: '🍅', name: 'Tomate',            cat: 'ofertas', unit: '2 kg',      price: 389, parentId: 'tomate', parentQty: 2 },
+  { id: 'oferta-tomate', image: 'assets/p-tomate.jpg',                emoji: '🍅', name: 'Tomate',            cat: 'ofertas', unit: '2 kg',      price: , parentId: 'tomate', parentQty: 2 },
 
   // ---- Terra Verde (línea de productos orgánicos elaborados) ----
   {
