@@ -159,45 +159,47 @@
     <button id="closeCart" class="close-btn" aria-label="Cerrar el carrito">✕</button>
   </header>
 
-  <div id="cartItems" class="cart-items" aria-live="polite"></div>
+  <div class="drawer-body">
+    <div id="cartItems" class="cart-items" aria-live="polite"></div>
 
-  <form id="orderForm" class="order-form">
-    <h3>Datos de entrega</h3>
-    <div class="field">
-      <label for="fName">Nombre</label>
-      <input id="fName" name="nombre" type="text" autocomplete="name" required>
-    </div>
-    <div class="field">
-      <label for="fAddress">Dirección</label>
-      <input id="fAddress" name="direccion" type="text" autocomplete="street-address" required>
-    </div>
-    <div class="field">
-      <label for="fNotes">Comentarios <span class="opt">(opcional)</span></label>
-      <textarea id="fNotes" name="comentarios" rows="2" placeholder="Ej.: preferencia de horario, timbre, etc."></textarea>
-    </div>
+    <form id="orderForm" class="order-form">
+      <h3>Datos de entrega</h3>
+      <div class="field">
+        <label for="fName">Nombre</label>
+        <input id="fName" name="nombre" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="fAddress">Dirección</label>
+        <input id="fAddress" name="direccion" type="text" autocomplete="street-address" required>
+      </div>
+      <div class="field">
+        <label for="fNotes">Comentarios <span class="opt">(opcional)</span></label>
+        <textarea id="fNotes" name="comentarios" rows="2" placeholder="Ej.: preferencia de horario, timbre, etc."></textarea>
+      </div>
 
-    <fieldset class="field payment-field">
-      <legend>Método de pago</legend>
-      <label class="radio-option">
-        <input type="radio" name="pago" value="Transferencia" required>
-        <span>Transferencia</span>
-      </label>
-      <label class="radio-option">
-        <input type="radio" name="pago" value="Efectivo" required>
-        <span>Efectivo</span>
-      </label>
-    </fieldset>
+      <fieldset class="field payment-field">
+        <legend>Método de pago</legend>
+        <label class="radio-option">
+          <input type="radio" name="pago" value="Transferencia" required>
+          <span>Transferencia</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="pago" value="Efectivo" required>
+          <span>Efectivo</span>
+        </label>
+      </fieldset>
 
-    <div class="cart-total-row">
-      <span>Total estimado</span>
-      <strong id="cartTotal">$0</strong>
-    </div>
-    <p class="total-note">El total es aproximado: algunos productos se cotizan al armar el pedido.</p>
+      <div class="cart-total-row">
+        <span>Total estimado</span>
+        <strong id="cartTotal">$0</strong>
+      </div>
+      <p class="total-note">El total es aproximado: algunos productos se cotizan al armar el pedido.</p>
 
-    <button type="submit" id="checkoutBtn" class="btn-primary btn-block" disabled>
-      Revisar pedido
-    </button>
-  </form>
+      <button type="submit" id="checkoutBtn" class="btn-primary btn-block" disabled>
+        Revisar pedido
+      </button>
+    </form>
+  </div>
 </aside>
 
 <!-- ===== Aviso "compra por unidad" ===== -->
