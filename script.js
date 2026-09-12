@@ -4,7 +4,7 @@ const PRODUCTS = loadProducts();
 const WHATSAPP = '59895064328';
 // URL del Web App de Apps Script (Implementar → Nueva implementación en el editor
 // de Apps Script de la planilla "Pedidos"). Pegar acá una vez publicada.
-const ORDERS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzYTFxf9lIFqbro7XcP_H0J7L420ZsBpzhhSU2g5Y29WB-XSezGBheqa5gZ5_2UBplO/exec';
+const ORDERS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwL_Tlbdvo_6DPdBh5wbW531p7Xmy4GYNSkyhKSZhwpY2b7_R13CYk58hiRpbOGnPr3/exec';
 
 // ---------- Opciones por peso (unidad / medio kilo / kilo) ----------
 // Productos frescos que se venden por peso: les agregamos 3 presentaciones
