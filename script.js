@@ -2,6 +2,9 @@
 // Los productos viven en products-data.js (fuente compartida con el panel de admin).
 const PRODUCTS = loadProducts();
 const WHATSAPP = '59895064328';
+// URL del Web App de Apps Script (Implementar → Nueva implementación en el editor
+// de Apps Script de la planilla "Pedidos"). Pegar acá una vez publicada.
+const ORDERS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzYTFxf9lIFqbro7XcP_H0J7L420ZsBpzhhSU2g5Y29WB-XSezGBheqa5gZ5_2UBplO/exec';
 
 // ---------- Opciones por peso (unidad / medio kilo / kilo) ----------
 // Productos frescos que se venden por peso: les agregamos 3 presentaciones
@@ -373,8 +376,33 @@ document.addEventListener('keydown', e => {
   if (!previewModal.hidden && e.key === 'Escape') closePreview();
 });
 
+// ---------- Guardado del pedido en la planilla (además de WhatsApp) ----------
+function sendOrderToSheet(orderData) {
+  if (!ORDERS_WEBHOOK) return;
+  const keys = Object.keys(cart);
+  const total = keys.reduce((s, k) => s + resolveCartLine(k).price * cart[k], 0);
+  const items = keys.map(k => {
+    const line = resolveCartLine(k);
+    return { qty: cart[k], name: line.name, unit: line.unit, price: line.price * cart[k] };
+  });
+
+  fetch(ORDERS_WEBHOOK, {
+    method: 'POST',
+    body: JSON.stringify({
+      nombre: orderData.nombre,
+      direccion: orderData.direccion,
+      comentarios: orderData.notas || '',
+      pago: orderData.pago,
+      items,
+      total
+    })
+  }).catch(err => console.warn('No se pudo guardar el pedido en la planilla:', err));
+  // el fallo no debe interrumpir el envío por WhatsApp, por eso no se espera esta promesa
+}
+
 $('previewConfirm').addEventListener('click', () => {
   if (!pendingOrder) return;
+  sendOrderToSheet(pendingOrder);
   const msg = buildOrderMessage(pendingOrder);
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
   closePreview();
