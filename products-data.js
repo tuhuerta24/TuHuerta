@@ -7,6 +7,7 @@ const CATEGORIES = [
   { id: 'verduras',    label: 'Verduras',    emoji: '🥬' },
   { id: 'ofertas',     label: 'Ofertas',     emoji: '🏷️', desc: 'Precios especiales por tiempo limitado.' },
   { id: 'terra-verde', label: 'Terra Verde', emoji: '🌿', desc: 'Línea de productos orgánicos elaborados.' },
+  { id: 'listos-consumir', label: 'Listos para Consumir', emoji: '🍽️', desc: 'Productos envasados, listos para comer.' },
   { id: 'canastas',    label: 'Canastas',    emoji: '🧺', desc: 'Cajones armados con lo mejor de la huerta, a precio fijo.' },
   { id: 'otros',       label: 'Otros',       emoji: '🌱', desc: 'Hierbas frescas, miel y quesos.' },
   { id: 'congelados',  label: 'Congelados',  emoji: '❄️' },
@@ -59,7 +60,6 @@ const DEFAULT_PRODUCTS = [
   { id: 'coliflor', image: 'assets/p-coliflor.jpg',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 99 },
   { id: 'espinaca', image: 'assets/p-espinaca.jpg',         emoji: '🥬', name: 'Espinaca',          cat: 'verduras', unit: 'atado',  price: 79 },
   { id: 'hongos-champignon', image: 'assets/p-hongos-champignon.jpg', emoji: '🍄', name: 'Hongos Champignon', cat: 'verduras', unit: '250 g',  price: 255 },
-  { id: 'inspirada', image: 'assets/p-inspirada.jpeg',         emoji: '🥬', name: 'inspirada',          cat: 'verduras', unit: 'c/u',     price: 190 },
   { id: 'jengibre', image: 'assets/p-jengibre.jpg',         emoji: '🌿', name: 'Jengibre',          cat: 'verduras', unit: '100 g',  price: 28 },
   { id: 'lechuga', image: 'assets/p-lechuga.jpg',          emoji: '🥬', name: 'Lechuga',           cat: 'verduras', unit: 'c/u',    price: 59 },
   { id: 'lechuga-crespa', image: 'assets/p-lechuga-crespa.jpg',   emoji: '🥬', name: 'Lechuga Crespa',    cat: 'verduras', unit: 'c/u',    price: 59 },
@@ -129,6 +129,11 @@ const DEFAULT_PRODUCTS = [
     unit: '1 kg', price: 260, image: 'assets/terra-yerba-mate.jpg',
     desc: 'Nativa, 100% natural. Sabor original.',
   },
+
+  // ---- Listos para Consumir (envasados, listos para comer) ----
+  { id: 'inspirada', image: 'assets/p-inspirada.jpeg', emoji: '🥬', name: 'inspirada', cat: 'listos-consumir', unit: 'c/u', price: 190 },
+  { id: 'remolacha-huercasa', image: 'assets/p-remolacha-huercasa.jpg', name: 'Remolacha Envasada Huercasa', cat: 'listos-consumir', unit: 'paquete', price: 159 },
+  { id: 'choclo-huercasa', image: 'assets/p-choclo-huercasa.jpg', name: 'Choclo Envasado x2 Huercasa', cat: 'listos-consumir', unit: 'paquete', price: 169 },
 
   // ---- Canastas (armadas, a precio fijo · envío gratis) ----
   {
@@ -311,7 +316,7 @@ const PRODUCTS_DATA_VERSION = 4;
 // comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
 // la más reciente (ver loadProducts). El panel de admin regenera este valor al
 // descargar el archivo — no lo edites a mano.
-const DEFAULT_PRODUCTS_UPDATED_AT = '2026-09-17T18:22:44.553Z';
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-09-17T21:44:38.394Z';
 
 // Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
 function _productsTime(iso) {
