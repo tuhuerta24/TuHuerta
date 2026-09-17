@@ -54,10 +54,11 @@ const DEFAULT_PRODUCTS = [
   { id: 'cebolla-verdeo', image: 'assets/p-cebolla-verdeo.jpg',   emoji: '🧅', name: 'Cebolla de Verdeo', cat: 'verduras', unit: 'atado',  price: 99 },
   { id: 'calabacin', image: 'assets/p-calabacin.jpg',        emoji: '🥒', name: 'Calabacín',         cat: 'verduras', unit: 'kg',     price: 65 },
   { id: 'choclo', image: 'assets/p-choclo.jpg',           emoji: '🌽', name: 'Choclo',            cat: 'verduras', unit: 'c/u',    price: 89 },
-  { id: 'tomate-cherry', image: 'assets/p-tomate-cherry.jpg',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: '1/2 kg', price: 210 },
+  { id: 'tomate-cherry', image: 'assets/p-tomate-cherry.jpg',    emoji: '🍅', name: 'Tomate Cherry',     cat: 'verduras', unit: 'kg',     price: 499 },
   { id: 'chaucha', image: 'assets/p-chaucha.jpg',          emoji: '🫛', name: 'Chaucha',           cat: 'verduras', unit: '1/2 kg', price: 249 },
   { id: 'coliflor', image: 'assets/p-coliflor.jpg',         emoji: '🥦', name: 'Coliflor',          cat: 'verduras', unit: 'c/u',    price: 99 },
   { id: 'espinaca', image: 'assets/p-espinaca.jpg',         emoji: '🥬', name: 'Espinaca',          cat: 'verduras', unit: 'atado',  price: 79 },
+  { id: 'hongos-champignon', image: 'assets/p-hongos-champignon.jpg', emoji: '🍄', name: 'Hongos Champignon', cat: 'verduras', unit: '250 g',  price: 255 },
   { id: 'inspirada', image: 'assets/p-inspirada.jpeg',         emoji: '🥬', name: 'inspirada',          cat: 'verduras', unit: 'c/u',     price: 190 },
   { id: 'jengibre', image: 'assets/p-jengibre.jpg',         emoji: '🌿', name: 'Jengibre',          cat: 'verduras', unit: '100 g',  price: 28 },
   { id: 'lechuga', image: 'assets/p-lechuga.jpg',          emoji: '🥬', name: 'Lechuga',           cat: 'verduras', unit: 'c/u',    price: 59 },
@@ -75,7 +76,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'rucula', image: 'assets/p-rucula.jpg',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
   { id: 'repollo', image: 'assets/p-repollo.jpg',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 99 },
   { id: 'rabanito', image: 'assets/p-rabanito.jpg',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
-  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 269 },
+  { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 319 },
   { id: 'tomate-perita', image: 'assets/p-tomate-perita.jpg',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
   { id: 'zapallo-cabutia', image: 'assets/p-zapallo-cabutia.jpg',  emoji: '🎃', name: 'Zapallo Cabutiá',   cat: 'verduras', unit: 'kg',     price: 65 },
   { id: 'zapallito', image: 'assets/p-zapallito.jpg',        emoji: '🥒', name: 'Zapallito',         cat: 'verduras', unit: 'kg',     price: 199 },
@@ -310,7 +311,7 @@ const PRODUCTS_DATA_VERSION = 4;
 // comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
 // la más reciente (ver loadProducts). El panel de admin regenera este valor al
 // descargar el archivo — no lo edites a mano.
-const DEFAULT_PRODUCTS_UPDATED_AT = '2026-07-20T18:00:00.000Z';
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-09-17T02:22:42.154Z';
 
 // Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
 function _productsTime(iso) {
