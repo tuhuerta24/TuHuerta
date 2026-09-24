@@ -11,7 +11,7 @@ const ORDERS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwL_Tlbdvo_6DPdB
 // calculadas a partir del precio de referencia por kilo (el que carga el admin).
 // - "1 kg"     = precio por kilo (referencia).
 // - "1/2 kg"   = la mitad del precio por kilo.
-// - "Unidad"   = usa el precio por kilo como referencia; al pesar se cobra menos,
+// - "Unidad"   = estimado de ¼ kg (1 kg en piezas grandes); se cobra según el peso real,
 //                y por eso al agregarla mostramos un aviso (ver showApproxPopup).
 // Se calcula en el sitio (no en products-data.js) para que el admin siga editando
 // un solo precio y las tres opciones se recalculen solas.
@@ -27,6 +27,12 @@ const WEIGHT_OPTION_IDS = new Set([
   'zapallito', 'zanahoria', 'zucchini',
 ]);
 
+// Peso estimado de una unidad para calcular su precio orientativo. Usar el kilo
+// entero asustaba a los clientes: el total del carrito quedaba muy por encima de lo real.
+const UNIT_REFERENCE_KG = 0.25;
+// Piezas grandes: una unidad pesa 1 kg o más, así que ¼ kg quedaría muy por debajo.
+const UNIT_REFERENCE_KG_BY_ID = {'melon': 1, 'zapallo-cabutia': 1, 'calabacin': 1};
+
 // Precio por kilo de referencia según la unidad original con que viene cargado.
 function perKiloPrice(p) {
   const u = (p.unit || '').toLowerCase().trim();
@@ -41,7 +47,7 @@ function applyWeightOptions(products) {
     if (Array.isArray(p.variants) || Array.isArray(p.variantGroups)) return;
     const perKilo = perKiloPrice(p);
     p.variants = [
-      { key: 'unidad', label: 'Unidad', unit: 'unidad', price: Math.round(perKilo), approx: true },
+      { key: 'unidad', label: 'Unidad', unit: 'unidad', price: Math.round(perKilo * (UNIT_REFERENCE_KG_BY_ID[p.id] ?? UNIT_REFERENCE_KG)), approx: true },
       { key: 'medio',  label: '½ kg',   unit: '½ kg',   price: Math.round(perKilo / 2) },
       { key: 'kilo',   label: '1 kg',   unit: 'kg',     price: Math.round(perKilo) },
     ];
@@ -167,7 +173,7 @@ function cardHTML(p) {
     : `<span class="emoji" aria-hidden="true">${p.emoji}</span>`;
   const desc = p.desc ? `<p class="card-desc">${p.desc}</p>` : '';
   const approxNote = (hasVariants && variant && variant.approx)
-    ? `<p class="approx-note">Precio de referencia por kilo · se cobra según el peso real</p>`
+    ? `<p class="approx-note">Precio estimado por unidad · se cobra según el peso real</p>`
     : '';
 
   let variantOptions = '';
@@ -272,7 +278,7 @@ function updateCartUI() {
           <div class="ci-info">
             <h4>${line.name}</h4>
             <span>${line.price > 0 ? '$' + line.price : 'a consultar'} · por ${line.unit}</span>
-            ${line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : ''}
+            ${line.unit === 'unidad' ? '<span class="ci-approx">Precio estimado · se ajusta al peso</span>' : ''}
           </div>
           <div class="ci-controls">
             <button type="button" data-id="${key}" data-d="-1" aria-label="Quitar una unidad de ${line.name}">−</button>
@@ -310,7 +316,7 @@ function buildOrderMessage({ nombre, direccion, notas, pago }) {
   let msg = `¡Hola Tu Huerta! Soy ${nombre} y quiero hacer este pedido:\n\n`;
   keys.forEach(k => {
     const line = resolveCartLine(k);
-    const approx = line.unit === 'unidad' ? ' (ref. por kilo, se ajusta al peso)' : '';
+    const approx = line.unit === 'unidad' ? ' (estimado, se ajusta al peso)' : '';
     const sub = line.price > 0 ? ` — $${line.price * cart[k]}${approx}` : ' — a consultar';
     msg += `• ${cart[k]} x ${line.name} (${line.unit})${sub}\n`;
   });
@@ -336,7 +342,7 @@ function openPreview(orderData) {
 
   $('previewItems').innerHTML = keys.map(k => {
     const line = resolveCartLine(k);
-    const approx = line.unit === 'unidad' ? '<span class="ci-approx">Precio ref. por kilo · se ajusta al peso</span>' : '';
+    const approx = line.unit === 'unidad' ? '<span class="ci-approx">Precio estimado · se ajusta al peso</span>' : '';
     const sub = line.price > 0 ? `$${line.price * cart[k]}` : 'a consultar';
     return `
       <li class="preview-item">
@@ -469,8 +475,8 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- Aviso "compra por unidad" ----------
-// Al agregar una unidad, avisamos que el precio es de referencia (por kilo) y que
-// al momento de pagar se cobra según el peso real, así que se paga menos.
+// Al agregar una unidad, avisamos que el precio es un estimado y que al momento de
+// pagar se cobra según el peso real de cada unidad.
 const approxOverlay = $('approxOverlay');
 const approxModal = $('approxModal');
 let approxLastFocused = null;
@@ -478,10 +484,10 @@ let approxLastFocused = null;
 function showApproxPopup(cartKey) {
   const line = resolveCartLine(cartKey);
   const priceTxt = line.price > 0
-    ? `El precio que ves ($${line.price}) es una referencia basada en el precio por kilo. `
+    ? `El precio que ves ($${line.price}) es un estimado para una unidad de tamaño promedio. `
     : '';
   $('approxTitle').textContent = `Agregaste ${line.name} por unidad`;
-  $('approxText').textContent = `${priceTxt}Al momento de pagar te cobramos según el peso real de la unidad, así que vas a pagar menos.`;
+  $('approxText').textContent = `${priceTxt}Al entregarte el pedido te cobramos según el peso real de cada unidad, así que el total puede variar un poco.`;
   approxLastFocused = document.activeElement;
   approxOverlay.hidden = false;
   approxModal.hidden = false;
