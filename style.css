@@ -326,6 +326,45 @@ img, svg { display: block; }
 
 .stock-note { text-align: center; color: var(--text-soft); font-size: .82rem; font-style: italic; margin-top: 40px; }
 
+/* ---------- Empresas ---------- */
+.hero-link {
+  display: block; width: fit-content; margin: 20px auto 0;
+  color: #F4A985; font-weight: 600; text-decoration: none;
+}
+.hero-link:hover { text-decoration: underline; }
+
+.empresas { background: var(--green-soft); }
+.empresas-inner {
+  max-width: 1120px; margin: 0 auto; padding: 64px 20px;
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: start;
+}
+.empresas-tag {
+  font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  font-size: .8rem; color: var(--green); margin-bottom: 10px;
+}
+.empresas h2 { font-weight: 300; font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.2; margin-bottom: 12px; }
+.empresas h2 .hand { color: var(--orange); white-space: nowrap; }
+.empresas-sub { color: var(--text-soft); margin-bottom: 26px; max-width: 520px; }
+.empresas-benefits { list-style: none; display: grid; gap: 18px; }
+.empresas-benefits li { display: flex; gap: 14px; align-items: flex-start; }
+.empresas-benefits .icon {
+  flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px;
+  background: var(--white); display: grid; place-items: center; font-size: 1.3rem;
+}
+.empresas-benefits strong { display: block; font-weight: 600; }
+.empresas-benefits p { font-size: .92rem; color: var(--text-soft); }
+.empresas-form {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 26px;
+}
+.empresas-form h3 { font-size: 1.2rem; font-weight: 600; color: var(--green); margin-bottom: 14px; }
+.empresas-form .btn-primary { margin-top: 6px; }
+.empresas-note { font-size: .8rem; color: var(--text-soft); text-align: center; margin-top: 10px; }
+
+@media (max-width: 820px) {
+  .empresas-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px; }
+}
+
 /* ---------- Footer ---------- */
 .site-footer { background: var(--black); color: var(--white); }
 .footer-inner {

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 
@@ -44,6 +44,7 @@
     <h1 id="hero-title">De la huerta <span class="hand">a tu mesa</span></h1>
     <p class="hero-sub">Elegí tus frutas y verduras, armá el pedido y te lo llevamos a tu casa. Simple, fresco y de confianza.</p>
     <a class="btn-primary" href="#productos">Empezar mi pedido</a>
+    <a class="hero-link" href="#empresas">¿Sos empresa? Fruta fresca para tu equipo →</a>
   </div>
 </section>
 
@@ -70,6 +71,7 @@
     <a href="#huevos">🥚 Huevos</a>
     <a href="#especias">🧂 Especias</a>
     <a href="#sal-marina">🌊 Sal Marina</a>
+    <a href="#empresas">🏢 Empresas</a>
   </nav>
 
   <p id="resultCount" class="visually-hidden" role="status" aria-live="polite"></p>
@@ -139,6 +141,44 @@
   <p id="emptySearch" class="empty-search" hidden>No encontramos productos con ese nombre. Probá con otra palabra.</p>
   <p class="stock-note">*Precios sujetos a stock y actualizaciones.</p>
 </main>
+
+<!-- ===== Empresas ===== -->
+<section id="empresas" class="empresas" aria-labelledby="empresas-title">
+  <div class="empresas-inner">
+    <div class="empresas-copy">
+      <p class="empresas-tag">Tu Huerta para empresas</p>
+      <h2 id="empresas-title">Fruta fresca para tu equipo, <span class="hand">a la medida</span></h2>
+      <p class="empresas-sub">Armamos un presupuesto según cuántas personas son y qué frutas prefieren, y lo llevamos a tu oficina.</p>
+      <ul class="empresas-benefits">
+        <li><span class="icon" aria-hidden="true">🍎</span><div><strong>A medida de tu equipo</strong><p>Cantidad y variedad según las personas y sus gustos.</p></div></li>
+        <li><span class="icon" aria-hidden="true">♻️</span><div><strong>Canastos retornables</strong><p>Entregamos en canastos que se reutilizan, sin cajas de cartón.</p></div></li>
+        <li><span class="icon" aria-hidden="true">🥬</span><div><strong>Más que fruta</strong><p>Si lo necesitan, sumamos verduras, huevos y más para la cocina.</p></div></li>
+      </ul>
+    </div>
+
+    <form id="empresasForm" class="empresas-form">
+      <h3>Pedí tu presupuesto</h3>
+      <div class="field">
+        <label for="eEmpresa">Empresa</label>
+        <input id="eEmpresa" name="empresa" type="text" autocomplete="organization" required>
+      </div>
+      <div class="field">
+        <label for="eContacto">Tu nombre</label>
+        <input id="eContacto" name="contacto" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="ePersonas">¿Cuántas personas son?</label>
+        <input id="ePersonas" name="personas" type="number" min="1" inputmode="numeric" required>
+      </div>
+      <div class="field">
+        <label for="eGustos">¿Qué frutas prefieren? <span class="opt">(opcional)</span></label>
+        <textarea id="eGustos" name="gustos" rows="2" placeholder="Ej.: banana, manzana, mandarina"></textarea>
+      </div>
+      <button type="submit" class="btn-primary btn-block">Pedir presupuesto por WhatsApp</button>
+      <p class="empresas-note">Te respondemos por WhatsApp con el presupuesto.</p>
+    </form>
+  </div>
+</section>
 
 <!-- ===== Footer ===== -->
 <footer class="site-footer">
@@ -247,6 +287,6 @@
 </div>
 
 <script src="products-data.js?v=15"></script>
-<script src="script.js?v=18"></script>
+<script src="script.js?v=19"></script>
 </body>
 </html>

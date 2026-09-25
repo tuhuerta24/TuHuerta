@@ -431,6 +431,17 @@ $('orderForm').addEventListener('submit', e => {
   });
 });
 
+// ---------- Presupuesto para empresas ----------
+$('empresasForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target;
+  const gustos = f.gustos.value.trim();
+  let msg = `¡Hola Tu Huerta! Soy ${f.contacto.value.trim()}, de ${f.empresa.value.trim()}. ` +
+    `Quiero un presupuesto de fruta para la empresa.\n\nSomos ${f.personas.value} personas.`;
+  if (gustos) msg += `\nFrutas que preferimos: ${gustos}`;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+});
+
 // ---------- Buscador ----------
 $('searchInput').addEventListener('input', e => {
   search = e.target.value.toLowerCase().trim();
