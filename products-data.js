@@ -40,7 +40,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
   { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
   { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 229 },
-  { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva Blanca sin Semilla' cat: 'frutas', unit: 'kg',     price: 399 },
+  { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva Blanca sin Semilla', cat: 'frutas', unit: 'kg',     price: 399 },
 
   // ---- Verduras ----
   { id: 'ajo', image: 'assets/p-ajo.jpg',              emoji: '🧄', name: 'Ajo',               cat: 'verduras', unit: 'c/u',    price: 40 },
