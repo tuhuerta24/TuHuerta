@@ -145,7 +145,7 @@ const DEFAULT_PRODUCTS = [
   {
     id: 'canasta-inteligente', name: 'Canasta Inteligente', cat: 'canastas',
     unit: 'caja', price: 990, image: 'assets/p-canasta-inteligente.jpg',
-    desc: 'Incluye: 1 ajo · brócoli · 1k banana · 1k boniato · 1k cebolla · lechuga · 1k naranja · 1k mandarina · 1k manzana · ½k morrón · 1k papa · ½k zanahoria · calabacín · 1k berenjena · rúcula. Envío gratis.',
+    desc: 'Incluye: 1 ajo · brócoli · 1k banana · 1k boniato · 1k cebolla · lechuga · 1k naranja · 1k mandarina · 1k manzana · ½k morrón · 1k papa · ½k zanahoria · calabacín · 2 atados de espinaca · rúcula. Envío gratis.',
   },
   {
     id: 'canasta-familiar', name: 'Canasta Familiar', cat: 'canastas',
