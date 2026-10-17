@@ -443,9 +443,25 @@ $('empresasForm').addEventListener('submit', e => {
 });
 
 // ---------- Buscador ----------
+// Al buscar, llevar la pantalla al primer resultado (sin esto, al achicarse la página
+// el navegador quedaba al final, en la parte de empresas).
+function scrollToFirstResult() {
+  const first = Array.from(document.querySelectorAll('.cat-section')).find(sec => !sec.hidden);
+  if (!first) return;
+  let offset = 12;
+  ['.site-header', '.cat-nav'].forEach(sel => {
+    const el = document.querySelector(sel);
+    if (el && getComputedStyle(el).position === 'sticky') offset += el.offsetHeight;
+  });
+  const top = first.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+let searchScrollTimer;
 $('searchInput').addEventListener('input', e => {
   search = e.target.value.toLowerCase().trim();
   renderGrids();
+  clearTimeout(searchScrollTimer);
+  if (search) searchScrollTimer = setTimeout(scrollToFirstResult, 250);
 });
 
 // ---------- Drawer accesible ----------
