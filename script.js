@@ -66,7 +66,9 @@ let lastFocused = null;
 
 const $ = id => document.getElementById(id);
 const productById = id => PRODUCTS.find(p => p.id === id);
-const matches = p => p.name.toLowerCase().includes(search);
+// Normaliza texto para buscar sin importar tildes ni mayúsculas (tomate = Tomáte, limon = Limón).
+const normalizeText = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const matches = p => normalizeText(p.name).includes(search);
 
 // ---------- Variantes de una sola opción (ej.: especias por tamaño) ----------
 function activeVariantKey(p) {
@@ -458,7 +460,7 @@ function scrollToFirstResult() {
 }
 let searchScrollTimer;
 $('searchInput').addEventListener('input', e => {
-  search = e.target.value.toLowerCase().trim();
+  search = normalizeText(e.target.value).trim();
   renderGrids();
   clearTimeout(searchScrollTimer);
   if (search) searchScrollTimer = setTimeout(scrollToFirstResult, 250);
