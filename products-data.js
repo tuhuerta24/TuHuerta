@@ -76,6 +76,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'remolacha', image: 'assets/p-remolacha.jpg',        emoji: '🌿', name: 'Remolacha',         cat: 'verduras', unit: 'atado',  price: 139 },
   { id: 'rucula', image: 'assets/p-rucula.jpg',           emoji: '🌿', name: 'Rúcula',            cat: 'verduras', unit: 'atado',  price: 79 },
   { id: 'repollo', image: 'assets/p-repollo.jpg',          emoji: '🥬', name: 'Repollo',           cat: 'verduras', unit: 'c/u',    price: 119 },
+  { id: 'repollo-colorado', image: 'assets/p-repollo-colorado.jpg',          emoji: '🥬', name: 'Repollo Colorado',  cat: 'verduras', unit: 'c/u',    price: 119 },
   { id: 'rabanito', image: 'assets/p-rabanito.jpg',         emoji: '🥬', name: 'Rabanito',          cat: 'verduras', unit: 'atado',  price: 0 },
   { id: 'tomate', image: 'assets/p-tomate.jpg',           emoji: '🍅', name: 'Tomate',            cat: 'verduras', unit: 'kg',     price: 259 },
   { id: 'tomate-perita', image: 'assets/p-tomate-perita.jpg',    emoji: '🍅', name: 'Tomate Perita',     cat: 'verduras', unit: 'kg',     price: 0 },
