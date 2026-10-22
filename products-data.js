@@ -31,6 +31,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'mandarina', image: 'assets/p-mandarina.jpg',       emoji: '🍊', name: 'Mandarina',          cat: 'frutas', unit: 'kg',     price: 69 },
   { id: 'palta', image: 'assets/p-palta.jpg',           emoji: '🥑', name: 'Palta',              cat: 'frutas', unit: 'c/u',    price: 59 },
   { id: 'pera', image: 'assets/p-pera.jpg',            emoji: '🍐', name: 'Pera',               cat: 'frutas', unit: 'kg',     price: 169 },
+  { id: 'durazno', image: 'assets/p-durazno.jpg',      emoji: '🍑', name: 'Durazno',            cat: 'frutas', unit: 'kg',     price: 249 },
   { id: 'ciruela-blue-oxi-dream', image: 'assets/p-ciruela-blue-oxi-dream.jpg', emoji: '🍑', name: 'Ciruela Blue Oxi Dream', cat: 'frutas', unit: '1/2 kg', price: 169 },
   { id: 'pomelo', image: 'assets/p-pomelo.jpg',          emoji: '🍈', name: 'Pomelo Rosado',      cat: 'frutas', unit: 'kg',     price: 119 },
   { id: 'kiwi', image: 'assets/p-kiwi.jpg',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
