@@ -18,7 +18,7 @@ const ORDERS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwL_Tlbdvo_6DPdB
 const WEIGHT_OPTION_IDS = new Set([
   // Frutas (todas menos palta, mango, arándanos y ananá)
   'banana', 'banana-ecuador', 'manzana-roja', 'manzana-verde', 'manzana-pl', 'naranja',
-  'limon', 'mandarina', 'pera', 'pomelo', 'kiwi', 'lima', 'frutilla', 'melon', 'uva',
+  'limon', 'mandarina', 'pera', 'durazno', 'pomelo', 'kiwi', 'lima', 'frutilla', 'melon', 'uva',
   'ciruela-blue-oxi-dream',
   // Verduras vendidas por peso (excluye las de c/u, atado o bolsa)
   'boniato-criollo', 'boniato-zanahoria', 'berenjena', 'cebolla', 'cebolla-colorada',
