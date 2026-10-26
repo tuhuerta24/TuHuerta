@@ -37,9 +37,9 @@ const DEFAULT_PRODUCTS = [
   { id: 'kiwi', image: 'assets/p-kiwi.jpg',            emoji: '🥝', name: 'Kiwi',               cat: 'frutas', unit: '1/2 kg', price: 160 },
   { id: 'lima', image: 'assets/p-lima.jpg',            emoji: '🍋', name: 'Lima',               cat: 'frutas', unit: '1/2 kg', price: 110 },
   { id: 'anana', image: 'assets/p-anana.jpg',           emoji: '🍍', name: 'Ananá',              cat: 'frutas', unit: 'c/u',    price: 219 },
-  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: 'kg',     price: 320 },
+  { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: 'kg',     price: 249 },
   { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
-  { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 169 },
+  { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 119 },
   { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 229 },
   { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva Blanca sin Semilla', cat: 'frutas', unit: 'kg',     price: 399 },
 
@@ -108,7 +108,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'oferta-zanahoria', image: 'assets/p-zanahoria.jpg',            emoji: '🥕', name: 'Zanahoria',         cat: 'ofertas', unit: '2 kg',      price: 129, parentId: 'zanahoria', parentQty: 2 },
   { id: 'oferta-zucchini', image: 'assets/p-zucchini.jpg',             emoji: '🥒', name: 'Zucchini',          cat: 'ofertas', unit: '2 kg',      price: 378, parentId: 'zucchini', parentQty: 2 },
   { id: 'oferta-acelga', image: 'assets/p-acelga.jpg',                emoji: '🥬', name: 'Acelga',            cat: 'ofertas', unit: '2 atados',  price: 125, parentId: 'acelga', parentQty: 2 },
-  { id: 'oferta-arandanos', image: 'assets/p-arandanos.jpg',            emoji: '🫐', name: 'Arándanos',         cat: 'ofertas', unit: '2 petacas', price: 289, parentId: 'arandanos', parentQty: 2 },
+  { id: 'oferta-arandanos', image: 'assets/p-arandanos.jpg',            emoji: '🫐', name: 'Arándanos',         cat: 'ofertas', unit: '2 petacas', price: 199, parentId: 'arandanos', parentQty: 2 },
   { id: 'oferta-tomate', image: 'assets/p-tomate.jpg',                emoji: '🍅', name: 'Tomate',            cat: 'ofertas', unit: '2 kg',      price: 469, parentId: 'tomate', parentQty: 2 },
 
   // ---- Terra Verde (línea de productos orgánicos elaborados) ----
