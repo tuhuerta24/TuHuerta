@@ -73,6 +73,8 @@ function guardarSobrantesInterno_(items) {
     sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
     sheet.getRange(2, 6, rows.length, 1).setNumberFormat('dd/mm/yyyy hh:mm');
   }
+  // Al cambiar el stock, se recalcula la columna SUGERIDO del "Resumen del día".
+  try { rebuildResumenPorCategoria(); } catch (e) { console.log('Resumen: ' + e); }
   return { ok: true, guardados: rows.length,
     actualizado: Utilities.formatDate(ahora, Session.getScriptTimeZone(), 'dd/MM HH:mm') };
 }
@@ -91,4 +93,58 @@ function stockNormalize_(qty, unit) {
     return { qty: qty * factor, unit: aliases[paquete[2]] || paquete[2] };
   }
   return { qty, unit: raw };
+}
+
+// ---------------------------------------------------------------------------
+// Columna SUGERIDO del "Resumen del día": lo pedido (todo lo que está en la
+// hoja Pedidos) menos el último conteo de la pestaña Stock. Se compara cada
+// unidad por separado (kg con kg, unidades con unidades).
+// ---------------------------------------------------------------------------
+const SUG_CONTABLES_ = ['unidad', 'atado', 'bolsa', 'paquete'];
+
+function sugUnidad_(producto, unidad, cant) {
+  let p = String(producto || '').trim(), u = String(unidad || '').trim(), q = Number(cant) || 0;
+  if (u === 'u' || u === 'c/u' || u === 'unidades') u = 'unidad';
+  if (u === 'petaca') { u = 'g'; q = q * 125; }   // arándanos: 1 petaca = 125 g
+  if (u === 'maple') u = 'maple 30 u';             // oferta "2 maples" = maples de 30
+  if (p === 'Huevos') p = 'Huevo especial';        // la oferta de huevos es de Huevo especial
+  return { p, u, q };
+}
+
+function sugeridosResumen_(totales) {
+  const stock = {}; // producto → { unidad: cantidad }
+  const sh = stockSheet_();
+  const last = sh.getLastRow();
+  if (last >= 2) {
+    sh.getRange(2, 1, last - 1, 5).getValues().forEach(r => {
+      if (r[0] === '') return;
+      const x = sugUnidad_(r[0], r[3], Number(String(r[4]).replace(',', '.')));
+      stock[x.p] = stock[x.p] || {};
+      stock[x.p][x.u] = (stock[x.p][x.u] || 0) + x.q;
+    });
+  }
+
+  const out = {};
+  Object.keys(totales).forEach(producto => {
+    const partes = [];
+    let armar = false;
+    Object.keys(totales[producto]).forEach(unidad => {
+      const x = sugUnidad_(producto, unidad, totales[producto][unidad]);
+      if (x.u === 'caja') { armar = true; return; } // canastas: se arman con lo de stock
+      const s = stock[x.p] || {};
+      let clave = x.u;
+      // Un atado / bolsa / paquete también se pide como "unidad" (ej. rúcula).
+      if (s[clave] === undefined && SUG_CONTABLES_.indexOf(clave) >= 0) {
+        clave = SUG_CONTABLES_.filter(c => s[c] !== undefined)[0] || clave;
+      }
+      const hay = s[clave] || 0;
+      const usa = Math.min(hay, x.q);
+      if (s[clave] !== undefined) s[clave] = hay - usa; // no contar dos veces el mismo stock
+      const falta = Math.round((x.q - usa) * 100) / 100;
+      if (falta > 0) partes.push(formatoNumeroResumen(falta) + ' ' + (x.u === 'unidad' ? 'u' : x.u));
+    });
+    if (partes.length) out[producto] = 'Comprar ' + partes.join(' + ');
+    else out[producto] = armar ? 'Armar canasta' : '✓ Alcanza';
+  });
+  return out;
 }
