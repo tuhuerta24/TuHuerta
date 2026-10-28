@@ -50,6 +50,7 @@
   .seg button { border: 0; background: #fff; color: var(--muted); font-size: 14px; padding: 5px 12px; }
   .seg button.on { background: var(--green); color: #fff; }
   .extra { display: block; margin-top: 3px; font-size: 13px; color: var(--green); }
+  .nom .mayor { display: block; margin-top: 3px; font-size: 13px; font-weight: 600; color: #b3261e; }
 </style>
 </head>
 <body>
@@ -77,6 +78,72 @@
     { id: 'terra-verde', label: 'Terra Verde' },
     { id: 'sal-marina', label: 'Sales' }
   ];
+  // Cómo viene cada producto por mayor (se muestra en rojo al lado del nombre).
+  var MAYOR = {
+    'Banana': 'cajón 20 kg',
+    'Banana Ecuador': 'por unidad',
+    'Manzana Roja': 'cajón 18 kg o plancha 9 kg',
+    'Manzana Verde': 'plancha 9 kg',
+    'Manzana Pink Lady': 'plancha 9 kg',
+    'Naranja': 'cajón 18 kg',
+    'Limón': 'cajón 18 kg',
+    'Mandarina': 'cajón 20 kg',
+    'Palta': '60 unidades',
+    'Pera': 'plancha 9 kg',
+    'Durazno': 'plancha 8 kg',
+    'Ciruela Blue Oxi Dream': '5 kg',
+    'Pomelo Rosado': 'por unidad',
+    'Kiwi': 'cajón 10 kg',
+    'Lima': 'por unidad',
+    'Ananá': 'por unidad',
+    'Frutilla': 'plancha M 3,5 kg',
+    'Mango': 'por unidad',
+    'Arándanos': '12 unidades',
+    'Melón': 'por unidad',
+    'Uva Blanca sin Semilla': '8 kg o 5 kg',
+    // Verduras
+    'Ajo': 'bolsa 18',
+    'Acelga': 'cajón 12 o por unidad',
+    'Apio': 'por atado',
+    'Albahaca': 'por unidad',
+    'Boniato Criollo': 'por unidad',
+    'Boniato Zanahoria': 'cajón 18 kg',
+    'Brócoli': '12 unidades',
+    'Berenjena': 'plancha 5-6 kg',
+    'Cebolla': 'bolsa 18 kg',
+    'Cebolla Colorada': 'bolsa 18 kg',
+    'Cebolla de Verdeo': 'por atado',
+    'Calabacín': 'bolsa 18 kg',
+    'Choclo': '6 o 12 unidades',
+    'Tomate Cherry': 'plancha 8 kg',
+    'Chaucha': 'plancha 4 kg',
+    'Coliflor': 'por unidad',
+    'Espinaca': 'cajón 12',
+    'Hongos Champignon': 'bandeja 200 g o 1 kg',
+    'Jengibre': 'por unidad',
+    'Lechuga': 'cajón 12',
+    'Lechuga Crespa': 'cajón 12',
+    'Morrón Rojo': 'cajón 10 kg',
+    'Morrón Verde': 'por unidad',
+    'Morrón Amarillo': 'por unidad',
+    'Nabo': 'por unidad',
+    'Papa': 'bolsa 22 kg',
+    'Papín': 'bolsa 20 kg',
+    'Puerro': 'atado 6 unidades',
+    'Pepino': 'plancha 8 kg',
+    'Perejil': 'por atado',
+    'Remolacha': 'por atado',
+    'Rúcula': 'por unidad',
+    'Repollo': 'por unidad',
+    'Repollo Colorado': 'por unidad',
+    'Rabanito': 'por unidad',
+    'Tomate': '9 kg',
+    'Tomate Perita': '9 kg',
+    'Zapallo Cabutiá': 'bolsa 18 kg',
+    'Zapallito': 'cajón 18 kg',
+    'Zanahoria': 'bolsa 18 kg',
+    'Zucchini': 'plancha 7 kg'
+  };
   var TOKEN = <?!= JSON.stringify(token) ?>;
   var CATALOGO_URL = 'https://tuhuerta24.github.io/TuHuerta/products-data.js?v=' + Date.now();
 
@@ -162,7 +229,8 @@
         }
         html += '<div class="fila' + (tieneSobrante(p) ? ' con' : '') + '" data-k="' + encodeURIComponent(p.key) + '">' +
           '<div class="emoji">' + p.emoji + '</div>' +
-          '<div class="nom"><b>' + p.producto + '</b>' + unidadHtml + '</div>' +
+          '<div class="nom"><b>' + p.producto + '</b>' + unidadHtml +
+          (MAYOR[p.producto] ? '<span class="mayor">' + MAYOR[p.producto] + '</span>' : '') + '</div>' +
           '<div class="ctrl"><button class="btn" data-d="-1">−</button>' +
           '<input class="num" inputmode="decimal" value="' + (q ? fmt(q) : '') + '" placeholder="0">' +
           '<button class="btn" data-d="1">+</button></div></div>';
