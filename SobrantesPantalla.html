@@ -127,6 +127,7 @@
     'Morrón Verde': 'por unidad',
     'Morrón Amarillo': 'por unidad',
     'Nabo': 'por unidad',
+    'Nabo (Atado 6-7u)': 'por unidad',
     'Papa': 'bolsa 22 kg',
     'Papín': 'bolsa 20 kg',
     'Puerro': 'atado 6 unidades',
@@ -144,6 +145,9 @@
     'Zanahoria': 'bolsa 18 kg',
     'Zucchini': 'plancha 7 kg'
   };
+  // Estas categorías se compran todas por unidad.
+  var CATS_POR_UNIDAD = ['otros', 'huevos', 'listos-consumir', 'terra-verde', 'sal-marina'];
+  function mayorDe(p) { return MAYOR[p.producto] || (CATS_POR_UNIDAD.indexOf(p.cat) >= 0 ? 'por unidad' : ''); }
   var TOKEN = <?!= JSON.stringify(token) ?>;
   var CATALOGO_URL = 'https://tuhuerta24.github.io/TuHuerta/products-data.js?v=' + Date.now();
 
@@ -230,7 +234,7 @@
         html += '<div class="fila' + (tieneSobrante(p) ? ' con' : '') + '" data-k="' + encodeURIComponent(p.key) + '">' +
           '<div class="emoji">' + p.emoji + '</div>' +
           '<div class="nom"><b>' + p.producto + '</b>' + unidadHtml +
-          (MAYOR[p.producto] ? '<span class="mayor">' + MAYOR[p.producto] + '</span>' : '') + '</div>' +
+          (mayorDe(p) ? '<span class="mayor">' + mayorDe(p) + '</span>' : '') + '</div>' +
           '<div class="ctrl"><button class="btn" data-d="-1">−</button>' +
           '<input class="num" inputmode="decimal" value="' + (q ? fmt(q) : '') + '" placeholder="0">' +
           '<button class="btn" data-d="1">+</button></div></div>';
