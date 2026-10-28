@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #f6f4ee; --card: #ffffff; --ink: #1f2a1c; --muted: #6b7466;
+    --green: #2f7d32; --green-soft: #e3f1df; --line: #e4e1d8; --warn: #b4531a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg);
+    padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+  h1 { margin: 0 0 2px; font-size: 22px; }
+  .sub { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+  #buscar { width: 100%; font-size: 17px; padding: 11px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--card); }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding-top: 10px; scrollbar-width: none; }
+  .chip { flex: none; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 14px; font-size: 15px; }
+  .chip.on { background: var(--green); border-color: var(--green); color: #fff; }
+  main { padding: 8px 16px 120px; max-width: 900px; margin: 0 auto; }
+  .grupo { margin: 18px 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted); }
+  .fila { display: flex; align-items: center; gap: 10px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px; padding: 10px 10px 10px 14px; margin-bottom: 8px; }
+  .fila.con { border-color: var(--green); background: var(--green-soft); }
+  .emoji { font-size: 26px; width: 32px; text-align: center; }
+  .nom { flex: 1; min-width: 0; }
+  .nom b { display: block; font-size: 17px; font-weight: 600; }
+  .nom span { color: var(--muted); font-size: 14px; }
+  .ctrl { display: flex; align-items: center; gap: 6px; }
+  .btn { width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--bg); font-size: 26px; line-height: 1; color: var(--ink); }
+  .btn:active { transform: scale(.95); }
+  .num { width: 72px; height: 48px; text-align: center; font-size: 20px; font-weight: 600;
+    border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card);
+    border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 10px; align-items: center; }
+  #estado { flex: 1; font-size: 14px; color: var(--muted); }
+  #guardar { background: var(--green); color: #fff; border: 0; border-radius: 12px;
+    padding: 14px 22px; font-size: 18px; font-weight: 700; }
+  #guardar:disabled { opacity: .6; }
+  #cero { background: none; border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px;
+    font-size: 15px; color: var(--warn); }
+  .vacio { text-align: center; color: var(--muted); padding: 40px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sobrantes del local</h1>
+  <div class="sub">Cargá lo que queda después de armar los pedidos.</div>
+  <input id="buscar" type="search" placeholder="Buscar producto…" autocomplete="off">
+  <div class="chips" id="chips"></div>
+</header>
+<main id="lista"><div class="vacio">Cargando catálogo…</div></main>
+<footer>
+  <button id="cero">Todo en 0</button>
+  <div id="estado"></div>
+  <button id="guardar" disabled>Guardar</button>
+</footer>
+
+<script>
+  // Categorías que se cuentan como sobrante (lo fresco que se compra seguido).
+  var CATS = [
+    { id: 'frutas', label: 'Frutas' },
+    { id: 'verduras', label: 'Verduras' },
+    { id: 'otros', label: 'Hierbas y otros' },
+    { id: 'huevos', label: 'Huevos' },
+    { id: 'listos-consumir', label: 'Envasados' },
+    { id: 'sal-marina', label: 'Sales' }
+  ];
+  var TOKEN = <?!= JSON.stringify(token) ?>;
+  var CATALOGO_URL = 'https://tuhuerta24.github.io/TuHuerta/products-data.js?v=' + Date.now();
+
+  var productos = [];   // {key, producto, unidad, label, step, emoji, cat}
+  var cantidades = {};  // key → número
+  var filtro = 'todo', texto = '', cambios = false;
+
+  // Cómo se carga cada unidad del catálogo.
+  function unidadDeCarga(unit) {
+    var u = String(unit || '').trim();
+    if (u === 'kg' || u === '1/2 kg' || u === '½ kg' || u === '1 kg') return { unidad: 'kg', label: 'kg', step: 0.5 };
+    if (u === 'c/u') return { unidad: 'c/u', label: 'unidades', step: 1 };
+    if (u === 'atado') return { unidad: 'atado', label: 'atados', step: 1 };
+    if (u === 'bolsa') return { unidad: 'bolsa', label: 'bolsas', step: 1 };
+    if (u === 'paquete') return { unidad: 'paquete', label: 'paquetes', step: 1 };
+    if (/^maple/.test(u)) return { unidad: u, label: u.replace('maple', 'maples de').replace(' u', ''), step: 1 };
+    if (/^\d+\s*g$/.test(u)) return { unidad: u, label: 'paquetes de ' + u, step: 1 };
+    return { unidad: u, label: u, step: 1 };
+  }
+
+  function armarProductos() {
+    var vistos = {};
+    DEFAULT_PRODUCTS.forEach(function (p) {
+      if (!CATS.some(function (c) { return c.id === p.cat; })) return;
+      var units = p.variants ? p.variants.map(function (v) { return v.unit; }) : [p.unit];
+      units.forEach(function (unit) {
+        var u = unidadDeCarga(unit);
+        var key = p.name + '|' + u.unidad;
+        if (vistos[key]) return;
+        vistos[key] = true;
+        productos.push({ key: key, producto: p.name, unidad: u.unidad, label: u.label,
+          step: u.step, emoji: p.emoji || '•', cat: p.cat });
+      });
+    });
+  }
+
+  function fmt(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+
+  function pintarChips() {
+    var opts = [{ id: 'todo', label: 'Todo' }].concat(CATS, [{ id: 'con', label: 'Con sobrante' }]);
+    document.getElementById('chips').innerHTML = opts.map(function (o) {
+      return '<button class="chip' + (filtro === o.id ? ' on' : '') + '" data-f="' + o.id + '">' + o.label + '</button>';
+    }).join('');
+  }
+
+  function pintarLista() {
+    var t = texto.toLowerCase();
+    var html = '';
+    CATS.forEach(function (c) {
+      if (filtro !== 'todo' && filtro !== 'con' && filtro !== c.id) return;
+      var items = productos.filter(function (p) {
+        if (p.cat !== c.id) return false;
+        if (filtro === 'con' && !(cantidades[p.key] > 0)) return false;
+        return !t || p.producto.toLowerCase().indexOf(t) >= 0;
+      });
+      if (!items.length) return;
+      html += '<div class="grupo">' + c.label + '</div>';
+      items.forEach(function (p) {
+        var q = cantidades[p.key] || 0;
+        html += '<div class="fila' + (q > 0 ? ' con' : '') + '" data-k="' + encodeURIComponent(p.key) + '">' +
+          '<div class="emoji">' + p.emoji + '</div>' +
+          '<div class="nom"><b>' + p.producto + '</b><span>' + p.label + '</span></div>' +
+          '<div class="ctrl"><button class="btn" data-d="-1">−</button>' +
+          '<input class="num" inputmode="decimal" value="' + (q ? fmt(q) : '') + '" placeholder="0">' +
+          '<button class="btn" data-d="1">+</button></div></div>';
+      });
+    });
+    document.getElementById('lista').innerHTML = html || '<div class="vacio">No hay productos para mostrar.</div>';
+  }
+
+  function porKey(k) { return productos.filter(function (p) { return p.key === k; })[0]; }
+
+  function marcarCambios() {
+    cambios = true;
+    var n = Object.keys(cantidades).filter(function (k) { return cantidades[k] > 0; }).length;
+    document.getElementById('estado').textContent = n + ' productos con sobrante · sin guardar';
+    document.getElementById('guardar').disabled = false;
+  }
+
+  document.getElementById('lista').addEventListener('click', function (e) {
+    var b = e.target.closest('.btn'); if (!b) return;
+    var fila = b.closest('.fila'), k = decodeURIComponent(fila.dataset.k), p = porKey(k);
+    var q = Math.max(0, (cantidades[k] || 0) + Number(b.dataset.d) * p.step);
+    cantidades[k] = q;
+    fila.querySelector('.num').value = q ? fmt(q) : '';
+    fila.classList.toggle('con', q > 0);
+    marcarCambios();
+  });
+
+  document.getElementById('lista').addEventListener('change', function (e) {
+    if (!e.target.classList.contains('num')) return;
+    var fila = e.target.closest('.fila'), k = decodeURIComponent(fila.dataset.k);
+    var q = parseFloat(String(e.target.value).replace(',', '.'));
+    q = isNaN(q) || q < 0 ? 0 : q;
+    cantidades[k] = q;
+    e.target.value = q ? fmt(q) : '';
+    fila.classList.toggle('con', q > 0);
+    marcarCambios();
+  });
+
+  document.getElementById('chips').addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    filtro = c.dataset.f; pintarChips(); pintarLista();
+  });
+
+  document.getElementById('buscar').addEventListener('input', function (e) {
+    texto = e.target.value; pintarLista();
+  });
+
+  document.getElementById('cero').addEventListener('click', function () {
+    if (!confirm('¿Poner todos los sobrantes en 0?')) return;
+    cantidades = {}; pintarLista(); marcarCambios();
+  });
+
+  document.getElementById('guardar').addEventListener('click', function () {
+    var btn = this;
+    var items = productos.filter(function (p) { return cantidades[p.key] > 0; })
+      .map(function (p) { return { producto: p.producto, unidad: p.unidad, cantidad: cantidades[p.key] }; });
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    google.script.run
+      .withSuccessHandler(function (r) {
+        cambios = false; btn.textContent = 'Guardar';
+        document.getElementById('estado').textContent = '✓ Guardado ' + r.actualizado + ' · ' + r.guardados + ' productos';
+      })
+      .withFailureHandler(function (err) {
+        btn.disabled = false; btn.textContent = 'Guardar';
+        document.getElementById('estado').textContent = '⚠ No se pudo guardar: ' + err.message;
+      })
+      .guardarSobrantes(TOKEN, items);
+  });
+
+  window.addEventListener('beforeunload', function (e) { if (cambios) { e.preventDefault(); e.returnValue = ''; } });
+
+  // Carga el catálogo publicado en la web (así siempre coincide con lo que se vende).
+  var s = document.createElement('script');
+  s.src = CATALOGO_URL;
+  s.onload = function () {
+    armarProductos(); pintarChips(); pintarLista();
+    google.script.run.withSuccessHandler(function (r) {
+      (r.items || []).forEach(function (it) { cantidades[it.producto + '|' + it.unidad] = it.cantidad; });
+      document.getElementById('estado').textContent = r.actualizado ? 'Última carga: ' + r.actualizado : 'Todavía no hay sobrantes cargados';
+      pintarLista();
+    }).getSobrantes(TOKEN);
+  };
+  s.onerror = function () {
+    document.getElementById('lista').innerHTML = '<div class="vacio">No se pudo cargar el catálogo. Revisá la conexión y recargá.</div>';
+  };
+  document.head.appendChild(s);
+</script>
+</body>
+</html>
