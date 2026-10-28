@@ -46,6 +46,10 @@
   #cero { background: none; border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px;
     font-size: 15px; color: var(--warn); }
   .vacio { text-align: center; color: var(--muted); padding: 40px 0; }
+  .seg { display: inline-flex; margin-top: 4px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .seg button { border: 0; background: #fff; color: var(--muted); font-size: 14px; padding: 5px 12px; }
+  .seg button.on { background: var(--green); color: #fff; }
+  .extra { display: block; margin-top: 3px; font-size: 13px; color: var(--green); }
 </style>
 </head>
 <body>
@@ -70,6 +74,7 @@
     { id: 'otros', label: 'Hierbas y otros' },
     { id: 'huevos', label: 'Huevos' },
     { id: 'listos-consumir', label: 'Envasados' },
+    { id: 'terra-verde', label: 'Terra Verde' },
     { id: 'sal-marina', label: 'Sales' }
   ];
   var TOKEN = <?!= JSON.stringify(token) ?>;
@@ -77,12 +82,15 @@
 
   var productos = [];   // {key, producto, unidad, label, step, emoji, cat}
   var cantidades = {};  // key → número
+  var modo = {};        // key → 'u' cuando la fila está cargando por unidades
   var filtro = 'todo', texto = '', cambios = false;
 
   // Cómo se carga cada unidad del catálogo.
-  function unidadDeCarga(unit) {
+  function unidadDeCarga(unit, cat) {
     var u = String(unit || '').trim();
-    if (u === 'kg' || u === '1/2 kg' || u === '½ kg' || u === '1 kg') return { unidad: 'kg', label: 'kg', step: 0.5 };
+    // Terra Verde se cuenta por envase (botella / paquete), no por peso.
+    if (cat === 'terra-verde') return { unidad: u, label: 'unidades de ' + u, step: 1 };
+    if (u === 'kg' || u === '1/2 kg' || u === '½ kg' || /^\d+\s*kg$/.test(u)) return { unidad: 'kg', label: 'kg', step: 0.5 };
     if (u === 'c/u') return { unidad: 'c/u', label: 'unidades', step: 1 };
     if (u === 'atado') return { unidad: 'atado', label: 'atados', step: 1 };
     if (u === 'bolsa') return { unidad: 'bolsa', label: 'bolsas', step: 1 };
@@ -95,18 +103,30 @@
   function armarProductos() {
     var vistos = {};
     DEFAULT_PRODUCTS.forEach(function (p) {
-      if (!CATS.some(function (c) { return c.id === p.cat; })) return;
+      var cat = p.cat;
+      // De las ofertas solo entran las que no son un pack de otro producto (ej. Papín).
+      if (cat === 'ofertas') { if (p.parentId) return; cat = 'verduras'; }
+      if (!CATS.some(function (c) { return c.id === cat; })) return;
       var units = p.variants ? p.variants.map(function (v) { return v.unit; }) : [p.unit];
       units.forEach(function (unit) {
-        var u = unidadDeCarga(unit);
+        var u = unidadDeCarga(unit, cat);
         var key = p.name + '|' + u.unidad;
         if (vistos[key]) return;
         vistos[key] = true;
-        productos.push({ key: key, producto: p.name, unidad: u.unidad, label: u.label,
-          step: u.step, emoji: p.emoji || '•', cat: p.cat });
+        var item = { key: key, producto: p.name, unidad: u.unidad, label: u.label,
+          step: u.step, emoji: p.emoji || '•', cat: cat };
+        // Frutas y verduras por peso también se piden por unidad (ej. morrones):
+        // se pueden cargar en kg, en unidades, o las dos cosas.
+        if (u.unidad === 'kg' && (cat === 'frutas' || cat === 'verduras')) {
+          item.alt = { key: p.name + '|unidad', unidad: 'unidad', label: 'unidades', step: 1 };
+        }
+        productos.push(item);
       });
     });
   }
+
+  function activa(p) { return (p.alt && modo[p.key] === 'u') ? p.alt : p; }
+  function tieneSobrante(p) { return cantidades[p.key] > 0 || !!(p.alt && cantidades[p.alt.key] > 0); }
 
   function fmt(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
 
@@ -124,16 +144,25 @@
       if (filtro !== 'todo' && filtro !== 'con' && filtro !== c.id) return;
       var items = productos.filter(function (p) {
         if (p.cat !== c.id) return false;
-        if (filtro === 'con' && !(cantidades[p.key] > 0)) return false;
+        if (filtro === 'con' && !tieneSobrante(p)) return false;
         return !t || p.producto.toLowerCase().indexOf(t) >= 0;
       });
       if (!items.length) return;
       html += '<div class="grupo">' + c.label + '</div>';
       items.forEach(function (p) {
-        var q = cantidades[p.key] || 0;
-        html += '<div class="fila' + (q > 0 ? ' con' : '') + '" data-k="' + encodeURIComponent(p.key) + '">' +
+        var a = activa(p);
+        var q = cantidades[a.key] || 0;
+        var unidadHtml = '<span>' + p.label + '</span>';
+        if (p.alt) {
+          var otra = a === p ? p.alt : p;
+          var qo = cantidades[otra.key] || 0;
+          unidadHtml = '<span class="seg"><button data-m="kg"' + (a === p ? ' class="on"' : '') + '>kg</button>' +
+            '<button data-m="u"' + (a !== p ? ' class="on"' : '') + '>unidades</button></span>' +
+            (qo > 0 ? '<span class="extra">+ ' + fmt(qo) + ' ' + otra.label + '</span>' : '');
+        }
+        html += '<div class="fila' + (tieneSobrante(p) ? ' con' : '') + '" data-k="' + encodeURIComponent(p.key) + '">' +
           '<div class="emoji">' + p.emoji + '</div>' +
-          '<div class="nom"><b>' + p.producto + '</b><span>' + p.label + '</span></div>' +
+          '<div class="nom"><b>' + p.producto + '</b>' + unidadHtml + '</div>' +
           '<div class="ctrl"><button class="btn" data-d="-1">−</button>' +
           '<input class="num" inputmode="decimal" value="' + (q ? fmt(q) : '') + '" placeholder="0">' +
           '<button class="btn" data-d="1">+</button></div></div>';
@@ -152,23 +181,30 @@
   }
 
   document.getElementById('lista').addEventListener('click', function (e) {
+    var m = e.target.closest('.seg button');
+    if (m) {
+      var pm = porKey(decodeURIComponent(m.closest('.fila').dataset.k));
+      modo[pm.key] = m.dataset.m === 'u' ? 'u' : 'kg';
+      pintarLista();
+      return;
+    }
     var b = e.target.closest('.btn'); if (!b) return;
-    var fila = b.closest('.fila'), k = decodeURIComponent(fila.dataset.k), p = porKey(k);
-    var q = Math.max(0, (cantidades[k] || 0) + Number(b.dataset.d) * p.step);
-    cantidades[k] = q;
+    var fila = b.closest('.fila'), p = porKey(decodeURIComponent(fila.dataset.k)), a = activa(p);
+    var q = Math.max(0, (cantidades[a.key] || 0) + Number(b.dataset.d) * a.step);
+    cantidades[a.key] = q;
     fila.querySelector('.num').value = q ? fmt(q) : '';
-    fila.classList.toggle('con', q > 0);
+    fila.classList.toggle('con', tieneSobrante(p));
     marcarCambios();
   });
 
   document.getElementById('lista').addEventListener('change', function (e) {
     if (!e.target.classList.contains('num')) return;
-    var fila = e.target.closest('.fila'), k = decodeURIComponent(fila.dataset.k);
+    var fila = e.target.closest('.fila'), p = porKey(decodeURIComponent(fila.dataset.k)), a = activa(p);
     var q = parseFloat(String(e.target.value).replace(',', '.'));
     q = isNaN(q) || q < 0 ? 0 : q;
-    cantidades[k] = q;
+    cantidades[a.key] = q;
     e.target.value = q ? fmt(q) : '';
-    fila.classList.toggle('con', q > 0);
+    fila.classList.toggle('con', tieneSobrante(p));
     marcarCambios();
   });
 
@@ -188,8 +224,12 @@
 
   document.getElementById('guardar').addEventListener('click', function () {
     var btn = this;
-    var items = productos.filter(function (p) { return cantidades[p.key] > 0; })
-      .map(function (p) { return { producto: p.producto, unidad: p.unidad, cantidad: cantidades[p.key] }; });
+    var items = [];
+    productos.forEach(function (p) {
+      [p, p.alt].forEach(function (x) {
+        if (x && cantidades[x.key] > 0) items.push({ producto: p.producto, unidad: x.unidad, cantidad: cantidades[x.key] });
+      });
+    });
     btn.disabled = true; btn.textContent = 'Guardando…';
     google.script.run
       .withSuccessHandler(function (r) {
@@ -212,6 +252,9 @@
     armarProductos(); pintarChips(); pintarLista();
     google.script.run.withSuccessHandler(function (r) {
       (r.items || []).forEach(function (it) { cantidades[it.producto + '|' + it.unidad] = it.cantidad; });
+      productos.forEach(function (p) {
+        if (p.alt && cantidades[p.alt.key] > 0 && !(cantidades[p.key] > 0)) modo[p.key] = 'u';
+      });
       document.getElementById('estado').textContent = r.actualizado ? 'Última carga: ' + r.actualizado : 'Todavía no hay sobrantes cargados';
       pintarLista();
     }).getSobrantes(TOKEN);
