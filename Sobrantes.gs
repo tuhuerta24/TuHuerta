@@ -52,6 +52,10 @@ function getSobrantes(token) {
 // Reemplaza la pestaña "Stock" con lo que se cargó ahora (solo lo que es > 0).
 function guardarSobrantes(token, items) {
   exigirToken_(token);
+  return guardarSobrantesInterno_(items);
+}
+
+function guardarSobrantesInterno_(items) {
   const sheet = stockSheet_();
   const ahora = new Date();
   const rows = (items || [])
