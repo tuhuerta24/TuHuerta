@@ -111,6 +111,26 @@ function sugUnidad_(producto, unidad, cant) {
   return { p, u, q };
 }
 
+// Productos que se venden por peso pero también se piden por unidad: cada
+// unidad se cuenta con un peso estimado (el mismo que usa la web para el
+// precio orientativo), así lo pedido en kg y en unidades se compara junto.
+const PESO_UNIDAD_KG_ = { 'Melón': 1, 'Zapallo Cabutiá': 1, 'Calabacín': 1 };
+const POR_PESO_ = ['Banana', 'Banana Ecuador', 'Manzana Roja', 'Manzana Verde', 'Manzana Pink Lady',
+  'Naranja', 'Limón', 'Mandarina', 'Pera', 'Durazno', 'Pomelo Rosado', 'Kiwi', 'Lima', 'Frutilla',
+  'Melón', 'Uva Blanca sin Semilla', 'Ciruela Blue Oxi Dream', 'Boniato Criollo', 'Boniato Zanahoria',
+  'Berenjena', 'Cebolla', 'Cebolla Colorada', 'Calabacín', 'Tomate Cherry', 'Chaucha', 'Morrón Rojo',
+  'Morrón Verde', 'Morrón Amarillo', 'Papa', 'Papín', 'Pepino', 'Tomate', 'Tomate Perita',
+  'Zapallo Cabutiá', 'Zapallito', 'Zanahoria', 'Zucchini'];
+
+// Unidad y cantidad con las que se compara (unidades de productos por peso → kg).
+function normSug_(producto, unidad, cant) {
+  const x = sugUnidad_(producto, unidad, cant);
+  if (x.u === 'unidad' && POR_PESO_.indexOf(x.p) >= 0) {
+    return { p: x.p, u: 'kg', q: x.q * (PESO_UNIDAD_KG_[x.p] || 0.25), deUnidades: true };
+  }
+  return x;
+}
+
 // Lee la pestaña Stock: producto → { unidad: cantidad }.
 function leerStock_() {
   const stock = {};
@@ -119,7 +139,7 @@ function leerStock_() {
   if (last >= 2) {
     sh.getRange(2, 1, last - 1, 5).getValues().forEach(r => {
       if (r[0] === '') return;
-      const x = sugUnidad_(r[0], r[3], Number(String(r[4]).replace(',', '.')));
+      const x = normSug_(r[0], r[3], Number(String(r[4]).replace(',', '.')));
       stock[x.p] = stock[x.p] || {};
       stock[x.p][x.u] = (stock[x.p][x.u] || 0) + x.q;
     });
@@ -135,20 +155,32 @@ function claveStock_(s, u) {
   return u;
 }
 
+// Junta lo pedido de un producto ya convertido: { p, cant: { unidad: cantidad }, armar, deUnidades }.
+function pedidoNorm_(producto, porUnidad) {
+  const r = { p: producto, cant: {}, armar: false, deUnidades: false };
+  Object.keys(porUnidad).forEach(unidad => {
+    const x = normSug_(producto, unidad, porUnidad[unidad]);
+    r.p = x.p;
+    if (x.u === 'caja') { r.armar = true; return; }
+    if (x.deUnidades) r.deUnidades = true; else if (x.u === 'kg') r.conKg = true;
+    r.cant[x.u] = (r.cant[x.u] || 0) + x.q;
+  });
+  return r;
+}
+
+function textoCant_(q, u) {
+  return formatoNumeroResumen(q) + ' ' + (u === 'unidad' ? 'u' : u);
+}
+
 // Columna STOCK del resumen: cuánto hay de cada producto, en las mismas
-// unidades en que se pidió (0 si no hay nada cargado).
+// unidades con que se compara (0 si no hay nada cargado).
 function stockTextoResumen_(totales) {
   const stock = leerStock_();
   const out = {};
   Object.keys(totales).forEach(producto => {
-    const partes = [];
-    Object.keys(totales[producto]).forEach(unidad => {
-      const x = sugUnidad_(producto, unidad, totales[producto][unidad]);
-      if (x.u === 'caja') return;
-      const s = stock[x.p] || {};
-      const hay = s[claveStock_(s, x.u)] || 0;
-      partes.push(formatoNumeroResumen(hay) + ' ' + (x.u === 'unidad' ? 'u' : x.u));
-    });
+    const ped = pedidoNorm_(producto, totales[producto]);
+    const s = stock[ped.p] || {};
+    const partes = Object.keys(ped.cant).map(u => textoCant_(s[claveStock_(s, u)] || 0, u));
     out[producto] = partes.length ? partes.join(' + ') : '—';
   });
   return out;
@@ -156,24 +188,27 @@ function stockTextoResumen_(totales) {
 
 function sugeridosResumen_(totales) {
   const stock = leerStock_();
-
   const out = {};
   Object.keys(totales).forEach(producto => {
+    const ped = pedidoNorm_(producto, totales[producto]);
+    const s = stock[ped.p] || {};
     const partes = [];
-    let armar = false;
-    Object.keys(totales[producto]).forEach(unidad => {
-      const x = sugUnidad_(producto, unidad, totales[producto][unidad]);
-      if (x.u === 'caja') { armar = true; return; } // canastas: se arman con lo de stock
-      const s = stock[x.p] || {};
-      const clave = claveStock_(s, x.u);
+    Object.keys(ped.cant).forEach(u => {
+      const clave = claveStock_(s, u);
       const hay = s[clave] || 0;
-      const usa = Math.min(hay, x.q);
+      const usa = Math.min(hay, ped.cant[u]);
       if (s[clave] !== undefined) s[clave] = hay - usa; // no contar dos veces el mismo stock
-      const falta = Math.round((x.q - usa) * 100) / 100;
-      if (falta > 0) partes.push(formatoNumeroResumen(falta) + ' ' + (x.u === 'unidad' ? 'u' : x.u));
+      const falta = Math.round((ped.cant[u] - usa) * 100) / 100;
+      if (falta <= 0) return;
+      let txt = textoCant_(falta, u);
+      // Si se pidió solo por unidad, se aclara cuántas unidades son aprox.
+      if (u === 'kg' && ped.deUnidades && !ped.conKg) {
+        txt += ' (≈' + Math.ceil(falta / (PESO_UNIDAD_KG_[ped.p] || 0.25)) + ' u)';
+      }
+      partes.push(txt);
     });
     if (partes.length) out[producto] = 'Comprar ' + partes.join(' + ');
-    else out[producto] = armar ? 'Armar canasta' : '✓ Alcanza';
+    else out[producto] = ped.armar ? 'Armar canasta' : '✓ Alcanza';
   });
   return out;
 }
