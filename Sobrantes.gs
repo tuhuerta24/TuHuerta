@@ -111,8 +111,9 @@ function sugUnidad_(producto, unidad, cant) {
   return { p, u, q };
 }
 
-function sugeridosResumen_(totales) {
-  const stock = {}; // producto → { unidad: cantidad }
+// Lee la pestaña Stock: producto → { unidad: cantidad }.
+function leerStock_() {
+  const stock = {};
   const sh = stockSheet_();
   const last = sh.getLastRow();
   if (last >= 2) {
@@ -123,6 +124,38 @@ function sugeridosResumen_(totales) {
       stock[x.p][x.u] = (stock[x.p][x.u] || 0) + x.q;
     });
   }
+  return stock;
+}
+
+// En qué unidad del stock se busca lo pedido (un atado / bolsa también se pide como "unidad").
+function claveStock_(s, u) {
+  if (s[u] === undefined && SUG_CONTABLES_.indexOf(u) >= 0) {
+    return SUG_CONTABLES_.filter(c => s[c] !== undefined)[0] || u;
+  }
+  return u;
+}
+
+// Columna STOCK del resumen: cuánto hay de cada producto, en las mismas
+// unidades en que se pidió (0 si no hay nada cargado).
+function stockTextoResumen_(totales) {
+  const stock = leerStock_();
+  const out = {};
+  Object.keys(totales).forEach(producto => {
+    const partes = [];
+    Object.keys(totales[producto]).forEach(unidad => {
+      const x = sugUnidad_(producto, unidad, totales[producto][unidad]);
+      if (x.u === 'caja') return;
+      const s = stock[x.p] || {};
+      const hay = s[claveStock_(s, x.u)] || 0;
+      partes.push(formatoNumeroResumen(hay) + ' ' + (x.u === 'unidad' ? 'u' : x.u));
+    });
+    out[producto] = partes.length ? partes.join(' + ') : '—';
+  });
+  return out;
+}
+
+function sugeridosResumen_(totales) {
+  const stock = leerStock_();
 
   const out = {};
   Object.keys(totales).forEach(producto => {
@@ -132,11 +165,7 @@ function sugeridosResumen_(totales) {
       const x = sugUnidad_(producto, unidad, totales[producto][unidad]);
       if (x.u === 'caja') { armar = true; return; } // canastas: se arman con lo de stock
       const s = stock[x.p] || {};
-      let clave = x.u;
-      // Un atado / bolsa / paquete también se pide como "unidad" (ej. rúcula).
-      if (s[clave] === undefined && SUG_CONTABLES_.indexOf(clave) >= 0) {
-        clave = SUG_CONTABLES_.filter(c => s[c] !== undefined)[0] || clave;
-      }
+      const clave = claveStock_(s, x.u);
       const hay = s[clave] || 0;
       const usa = Math.min(hay, x.q);
       if (s[clave] !== undefined) s[clave] = hay - usa; // no contar dos veces el mismo stock
