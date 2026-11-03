@@ -35,6 +35,10 @@ function stockSheet_() {
 // Devuelve lo último que se cargó, para que la pantalla arranque con esos valores.
 function getSobrantes(token) {
   exigirToken_(token);
+  return getSobrantesInterno_();
+}
+
+function getSobrantesInterno_() {
   const sheet = stockSheet_();
   const last = sheet.getLastRow();
   if (last < 2) return { items: [], actualizado: '' };
@@ -211,4 +215,127 @@ function sugeridosResumen_(totales) {
     else out[producto] = ped.armar ? 'Armar canasta' : '✓ Alcanza';
   });
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Botón "Descontar pedidos": resta del Stock lo que usaron los pedidos ya
+// armados (los que se marcan en la pantalla). Cada pedido se descuenta una
+// sola vez, aunque se vuelva a tocar el botón.
+// ---------------------------------------------------------------------------
+const DESC_PROP_ = 'PEDIDOS_DESCONTADOS';
+
+function claveDescuento_(fecha, cliente) {
+  const f = fecha instanceof Date ? fecha.getTime() : String(fecha);
+  return f + '|' + String(cliente || '').trim();
+}
+
+// Mismos productos que arma la hoja Items para un pedido (canastas desglosadas).
+function itemsDeDetalle_(detalle) {
+  const out = [];
+  String(detalle || '').split('\n').forEach(linea => {
+    if (!linea.trim()) return;
+    const item = parsearLineaDetalle(linea);
+    if (!item) return;
+    const receta = buscarReceta(item.name);
+    if (receta) {
+      receta.forEach(c => out.push([c.name, c.unit, c.qty * item.qty]));
+      return;
+    }
+    const norm = normalizeUnit(item.qty, item.unit);
+    out.push([item.name, norm.unit, norm.qty]);
+  });
+  return out;
+}
+
+function leerPedidosDescuento_() {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const hechos = JSON.parse(PropertiesService.getScriptProperties().getProperty(DESC_PROP_) || '[]');
+  const tz = Session.getScriptTimeZone();
+  const vals = sh ? sh.getDataRange().getValues() : [];
+  const lista = [];
+  for (let i = 1; i < vals.length; i++) {
+    const fecha = vals[i][0], cliente = vals[i][1], detalle = vals[i][5];
+    if (!detalle) continue;
+    const clave = claveDescuento_(fecha, cliente);
+    lista.push({
+      clave: clave,
+      cliente: String(cliente || 'Sin nombre'),
+      fecha: fecha instanceof Date ? Utilities.formatDate(fecha, tz, 'dd/MM HH:mm') : String(fecha),
+      items: itemsDeDetalle_(detalle),
+      descontado: hechos.indexOf(clave) >= 0
+    });
+  }
+  return { lista: lista, hechos: hechos };
+}
+
+// Para la pantalla: los pedidos que hay en la hoja Pedidos y si ya se descontaron.
+function listarPedidosDescuento(token) {
+  exigirToken_(token);
+  return leerPedidosDescuento_().lista.map(p => ({
+    clave: p.clave, cliente: p.cliente, fecha: p.fecha, productos: p.items.length, descontado: p.descontado
+  }));
+}
+
+function descontarPedidos(token, claves) {
+  exigirToken_(token);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const datos = leerPedidosDescuento_();
+    const elegidos = datos.lista.filter(p => !p.descontado && (claves || []).indexOf(p.clave) >= 0);
+    if (!elegidos.length) {
+      const r0 = getSobrantesInterno_();
+      return { ok: true, pedidos: 0, items: r0.items, actualizado: r0.actualizado };
+    }
+
+    // Total usado por producto y unidad.
+    const totales = {};
+    elegidos.forEach(p => p.items.forEach(it => {
+      const prod = it[0], uni = it[1], cant = Number(it[2]) || 0;
+      totales[prod] = totales[prod] || {};
+      totales[prod][uni] = (totales[prod][uni] || 0) + cant;
+    }));
+
+    // Filas actuales del Stock, con su cantidad convertida a la unidad de comparación.
+    const sh = stockSheet_();
+    const last = sh.getLastRow();
+    const filas = (last < 2 ? [] : sh.getRange(2, 1, last - 1, 5).getValues())
+      .filter(r => r[0] !== '')
+      .map(r => {
+        const x = normSug_(r[0], r[3], Number(String(r[4]).replace(',', '.')) || 0);
+        return { producto: String(r[0]), unidad: String(r[1]), cat: Number(r[2]) || 0, p: x.p, u: x.u, q: x.q };
+      });
+
+    // Se resta lo usado (nunca queda menos de 0) y se vuelve a la unidad del catálogo.
+    Object.keys(totales).forEach(prod => {
+      const ped = pedidoNorm_(prod, totales[prod]);
+      const propias = filas.filter(f => f.p === ped.p);
+      const s = {};
+      propias.forEach(f => { s[f.u] = (s[f.u] || 0) + f.q; });
+      Object.keys(ped.cant).forEach(u => {
+        const clave = claveStock_(s, u);
+        let resta = ped.cant[u];
+        propias.filter(f => f.u === clave).forEach(f => {
+          if (resta <= 0 || f.q <= 0) return;
+          const usa = Math.min(f.q, resta);
+          const nq = f.q - usa;
+          f.cat = Math.round(f.cat * nq / f.q * 100) / 100;
+          f.q = nq;
+          resta -= usa;
+        });
+      });
+    });
+
+    guardarSobrantesInterno_(filas.map(f => ({ producto: f.producto, unidad: f.unidad, cantidad: f.cat })));
+
+    // Se recuerdan los pedidos descontados (solo los que siguen en la hoja Pedidos).
+    const vigentes = datos.lista.map(p => p.clave);
+    const hechos = datos.hechos.filter(k => vigentes.indexOf(k) >= 0).concat(elegidos.map(p => p.clave));
+    PropertiesService.getScriptProperties().setProperty(DESC_PROP_, JSON.stringify(hechos));
+
+    const r = getSobrantesInterno_();
+    return { ok: true, pedidos: elegidos.length, items: r.items, actualizado: r.actualizado };
+  } finally {
+    lock.releaseLock();
+  }
 }
