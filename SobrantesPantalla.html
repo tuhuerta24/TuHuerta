@@ -199,6 +199,9 @@
   function activa(p) { return (p.alt && modo[p.key] === 'u') ? p.alt : p; }
   function tieneSobrante(p) { return cantidades[p.key] > 0 || !!(p.alt && cantidades[p.alt.key] > 0); }
 
+  // Para buscar sin importar tildes ni mayúsculas ("limon" encuentra "Limón").
+  function sinTilde(s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim(); }
+
   function fmt(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
 
   function pintarChips() {
@@ -209,14 +212,14 @@
   }
 
   function pintarLista() {
-    var t = texto.toLowerCase();
+    var t = sinTilde(texto);
     var html = '';
     CATS.forEach(function (c) {
       if (filtro !== 'todo' && filtro !== 'con' && filtro !== c.id) return;
       var items = productos.filter(function (p) {
         if (p.cat !== c.id) return false;
         if (filtro === 'con' && !tieneSobrante(p)) return false;
-        return !t || p.producto.toLowerCase().indexOf(t) >= 0;
+        return !t || sinTilde(p.producto).indexOf(t) >= 0;
       });
       if (!items.length) return;
       html += '<div class="grupo">' + c.label + '</div>';
