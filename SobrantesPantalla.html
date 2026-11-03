@@ -50,6 +50,23 @@
   .seg button { border: 0; background: #fff; color: var(--muted); font-size: 14px; padding: 5px 12px; }
   .seg button.on { background: var(--green); color: #fff; }
   .extra { display: block; margin-top: 3px; font-size: 13px; color: var(--green); }
+  #descontar { background: var(--card); border: 1px solid var(--green); color: var(--green); border-radius: 12px;
+    padding: 14px 14px; font-size: 15px; font-weight: 600; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center;
+    justify-content: center; z-index: 20; padding: 16px; }
+  .modal.on { display: flex; }
+  .caja { background: var(--card); border-radius: 16px; width: 100%; max-width: 520px; max-height: 85vh;
+    display: flex; flex-direction: column; overflow: hidden; }
+  .caja h2 { margin: 0; padding: 16px 16px 4px; font-size: 20px; }
+  .caja .ayuda { padding: 0 16px 10px; color: var(--muted); font-size: 14px; }
+  .caja .peds { overflow-y: auto; padding: 0 16px; }
+  .ped { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 16px; }
+  .ped input { width: 24px; height: 24px; accent-color: var(--green); }
+  .ped small { display: block; color: var(--muted); font-size: 13px; }
+  .ped.hecho { opacity: .5; }
+  .caja .pie { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 16px; border-top: 1px solid var(--line); }
+  .caja .pie button { border-radius: 12px; padding: 12px 18px; font-size: 16px; border: 1px solid var(--line); background: #fff; }
+  .caja .pie .ok { background: var(--green); border-color: var(--green); color: #fff; font-weight: 700; }
   .nom .mayor { display: block; margin-top: 3px; font-size: 13px; font-weight: 600; color: #b3261e; }
 </style>
 </head>
@@ -63,9 +80,18 @@
 <main id="lista"><div class="vacio">Cargando catálogo…</div></main>
 <footer>
   <button id="cero">Todo en 0</button>
+  <button id="descontar">Descontar pedidos</button>
   <div id="estado"></div>
   <button id="guardar" disabled>Guardar</button>
 </footer>
+<div class="modal" id="modal">
+  <div class="caja">
+    <h2>Descontar pedidos armados</h2>
+    <div class="ayuda">Marcá los pedidos que ya armaste: lo que llevan se resta del stock. Los agendados para otro día dejalos sin marcar.</div>
+    <div class="peds" id="peds"></div>
+    <div class="pie"><button id="cancelarDesc">Cancelar</button><button class="ok" id="confirmarDesc">Descontar</button></div>
+  </div>
+</div>
 
 <script>
   // Categorías que se cuentan como sobrante (lo fresco que se compra seguido).
@@ -316,6 +342,68 @@
         document.getElementById('estado').textContent = '⚠ No se pudo guardar: ' + err.message;
       })
       .guardarSobrantes(TOKEN, items);
+  });
+
+  // ---- Descontar pedidos armados ----
+  var modal = document.getElementById('modal');
+  function contarMarcados() {
+    var n = document.querySelectorAll('#peds input:checked:not(:disabled)').length;
+    var b = document.getElementById('confirmarDesc');
+    b.textContent = n ? 'Descontar (' + n + ')' : 'Descontar';
+    b.disabled = !n;
+  }
+  document.getElementById('descontar').addEventListener('click', function () {
+    if (cambios) {
+      document.getElementById('estado').textContent = '⚠ Primero tocá Guardar, después Descontar';
+      return;
+    }
+    document.getElementById('peds').innerHTML = '<div class="vacio">Cargando pedidos…</div>';
+    modal.classList.add('on');
+    google.script.run
+      .withSuccessHandler(function (lista) {
+        if (!lista.length) {
+          document.getElementById('peds').innerHTML = '<div class="vacio">No hay pedidos en la planilla.</div>';
+          contarMarcados(); return;
+        }
+        document.getElementById('peds').innerHTML = lista.map(function (p) {
+          return '<label class="ped' + (p.descontado ? ' hecho' : '') + '">' +
+            '<input type="checkbox" value="' + encodeURIComponent(p.clave) + '"' +
+            (p.descontado ? ' checked disabled' : ' checked') + '>' +
+            '<span>' + p.cliente + '<small>' + p.fecha + ' · ' + p.productos + ' productos' +
+            (p.descontado ? ' · ya descontado' : '') + '</small></span></label>';
+        }).join('');
+        contarMarcados();
+      })
+      .withFailureHandler(function (err) {
+        document.getElementById('peds').innerHTML = '<div class="vacio">⚠ ' + err.message + '</div>';
+      })
+      .listarPedidosDescuento(TOKEN);
+  });
+  document.getElementById('peds').addEventListener('change', contarMarcados);
+  document.getElementById('cancelarDesc').addEventListener('click', function () { modal.classList.remove('on'); });
+  document.getElementById('confirmarDesc').addEventListener('click', function () {
+    var btn = this;
+    var claves = Array.prototype.map.call(document.querySelectorAll('#peds input:checked:not(:disabled)'),
+      function (c) { return decodeURIComponent(c.value); });
+    if (!claves.length) return;
+    btn.disabled = true; btn.textContent = 'Descontando…';
+    google.script.run
+      .withSuccessHandler(function (r) {
+        modal.classList.remove('on');
+        cantidades = {}; modo = {};
+        (r.items || []).forEach(function (it) { cantidades[it.producto + '|' + it.unidad] = it.cantidad; });
+        productos.forEach(function (p) {
+          if (p.alt && cantidades[p.alt.key] > 0 && !(cantidades[p.key] > 0)) modo[p.key] = 'u';
+        });
+        cambios = false; document.getElementById('guardar').disabled = true;
+        pintarLista();
+        document.getElementById('estado').textContent = '✓ Descontados ' + r.pedidos + ' pedidos · ' + r.actualizado;
+      })
+      .withFailureHandler(function (err) {
+        btn.disabled = false; contarMarcados();
+        document.getElementById('estado').textContent = '⚠ No se pudo descontar: ' + err.message;
+      })
+      .descontarPedidos(TOKEN, claves);
   });
 
   window.addEventListener('beforeunload', function (e) { if (cambios) { e.preventDefault(); e.returnValue = ''; } });
