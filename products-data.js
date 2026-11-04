@@ -106,7 +106,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'oferta-palta', image: 'assets/p-palta.jpg',                 emoji: '🥑', name: 'Palta',             cat: 'ofertas', unit: '3 unidades', price: 149, parentId: 'palta', parentQty: 3 },
   { id: 'oferta-puerro', image: 'assets/p-puerro.jpg',                emoji: '🧅', name: 'Puerro',            cat: 'ofertas', unit: '6 unidades', price: 179, parentId: 'puerro', parentQty: 6 },
   { id: 'oferta-zanahoria', image: 'assets/p-zanahoria.jpg',            emoji: '🥕', name: 'Zanahoria',         cat: 'ofertas', unit: '2 kg',      price: 129, parentId: 'zanahoria', parentQty: 2 },
-  { id: 'oferta-zucchini', image: 'assets/p-zucchini.jpg',             emoji: '🥒', name: 'Zucchini',          cat: 'ofertas', unit: '2 kg',      price: 378, parentId: 'zucchini', parentQty: 2 },
+  { id: 'oferta-zucchini', image: 'assets/p-zucchini.jpg',             emoji: '🥒', name: 'Zucchini',          cat: 'ofertas', unit: '2 kg',      price: 329, parentId: 'zucchini', parentQty: 2 },
   { id: 'oferta-acelga', image: 'assets/p-acelga.jpg',                emoji: '🥬', name: 'Acelga',            cat: 'ofertas', unit: '2 atados',  price: 125, parentId: 'acelga', parentQty: 2 },
   { id: 'oferta-arandanos', image: 'assets/p-arandanos.jpg',            emoji: '🫐', name: 'Arándanos',         cat: 'ofertas', unit: '2 petacas', price: 199, parentId: 'arandanos', parentQty: 2 },
   { id: 'oferta-tomate', image: 'assets/p-tomate.jpg',                emoji: '🍅', name: 'Tomate',            cat: 'ofertas', unit: '2 kg',      price: 569, parentId: 'tomate', parentQty: 2 },
