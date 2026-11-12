@@ -40,6 +40,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'frutilla', image: 'assets/p-frutilla.jpg',        emoji: '🍓', name: 'Frutilla',           cat: 'frutas', unit: 'kg',     price: 249 },
   { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
   { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 99 },
+  { id: 'cereza', image: 'assets/p-cereza.jpg',          emoji: '🍒', name: 'Cereza',             cat: 'frutas', unit: '100 g',  price: 159 },
   { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 229 },
   { id: 'uva', image: 'assets/p-uva.jpg',             emoji: '🍇', name: 'Uva Blanca sin Semilla', cat: 'frutas', unit: 'kg',     price: 399 },
 
@@ -319,7 +320,7 @@ const PRODUCTS_DATA_VERSION = 4;
 // comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
 // la más reciente (ver loadProducts). El panel de admin regenera este valor al
 // descargar el archivo — no lo edites a mano.
-const DEFAULT_PRODUCTS_UPDATED_AT = '2026-10-13T02:15:00.000Z';
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-11-12T03:00:00.000Z';
 
 // Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
 function _productsTime(iso) {
