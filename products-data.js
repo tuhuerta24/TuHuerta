@@ -163,6 +163,14 @@ const DEFAULT_PRODUCTS = [
   { id: 'cilantro', image: 'assets/p-cilantro.jpg',        emoji: '🌿', name: 'Cilantro',          cat: 'otros', unit: 'atado', price: 99 },
   { id: 'romero', image: 'assets/p-romero.jpg',          emoji: '🌿', name: 'Romero',            cat: 'otros', unit: 'atado', price: 65 },
   { id: 'laurel', image: 'assets/p-laurel.jpg',          emoji: '🌿', name: 'Laurel',            cat: 'otros', unit: 'atado', price: 60 },
+  { id: 'menta', image: 'assets/p-menta.jpg', emoji: '🌿', name: 'Menta', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'perejil-crespo', image: 'assets/p-perejil-crespo.jpg', emoji: '🌿', name: 'Perejil Crespo', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'kale-morado', image: 'assets/p-kale-morado.jpg', emoji: '🥬', name: 'Kale Morado', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'mostaza', image: 'assets/p-mostaza.jpg', emoji: '🥬', name: 'Mostaza', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'mizuna', image: 'assets/p-mizuna.jpg', emoji: '🥬', name: 'Mizuna', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'eneldo', image: 'assets/p-eneldo.jpg', emoji: '🌿', name: 'Eneldo', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'radicheta', image: 'assets/p-radicheta.jpg', emoji: '🥬', name: 'Radicheta', cat: 'otros', unit: 'atado', price: 0 },
+  { id: 'tomillo-fresco', image: 'assets/p-tomillo.jpg', emoji: '🌿', name: 'Tomillo Fresco', cat: 'otros', unit: 'atado', price: 0 },
   { id: 'miel-500', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1/2 kg', price: 175 },
   { id: 'miel-1kg', image: 'assets/p-miel-500.jpg',        emoji: '🍯', name: 'Miel',              cat: 'otros', unit: '1 kg',   price: 299 },
   { id: 'queso-colonia', image: 'assets/p-queso-colonia.jpg',   emoji: '🧀', name: 'Queso Colonia',     cat: 'otros', unit: '1/2 kg', price: 259 },
@@ -320,7 +328,7 @@ const PRODUCTS_DATA_VERSION = 4;
 // comparamos esta fecha contra la de los cambios guardados en el navegador y usamos
 // la más reciente (ver loadProducts). El panel de admin regenera este valor al
 // descargar el archivo — no lo edites a mano.
-const DEFAULT_PRODUCTS_UPDATED_AT = '2026-11-12T03:00:00.000Z';
+const DEFAULT_PRODUCTS_UPDATED_AT = '2026-11-15T14:00:00.000Z';
 
 // Devuelve un timestamp comparable (número). Ante fechas inválidas, 0.
 function _productsTime(iso) {
