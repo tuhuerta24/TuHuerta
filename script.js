@@ -130,6 +130,7 @@ function resolveCartLine(cartKey) {
 function renderGrids() {
   document.querySelectorAll('.product-grid').forEach(grid => {
     const list = PRODUCTS.filter(p => p.cat === grid.dataset.cat && matches(p));
+    list.sort((x, y) => x.name.localeCompare(y.name, 'es', { sensitivity: 'base', numeric: true }));
     grid.innerHTML = list.map(cardHTML).join('');
   });
   bindCards();
