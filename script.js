@@ -19,7 +19,7 @@ const WEIGHT_OPTION_IDS = new Set([
   // Frutas (todas menos palta, mango, arándanos y ananá)
   'banana', 'banana-ecuador', 'manzana-roja', 'manzana-verde', 'manzana-pl', 'naranja',
   'limon', 'mandarina', 'pera', 'durazno', 'pomelo', 'kiwi', 'lima', 'frutilla', 'melon', 'uva',
-  'ciruela-blue-oxi-dream',
+  'ciruela-blue-oxi-dream', 'pelon',
   // Verduras vendidas por peso (excluye las de c/u, atado o bolsa)
   'boniato-criollo', 'boniato-zanahoria', 'berenjena', 'cebolla', 'cebolla-colorada',
   'calabacin', 'tomate-cherry', 'chaucha', 'jengibre', 'morron-rojo', 'morron-verde',
