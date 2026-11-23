@@ -43,7 +43,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'mango', image: 'assets/p-mango.jpg',           emoji: '🥭', name: 'Mango',              cat: 'frutas', unit: 'c/u',    price: 135 },
   { id: 'arandanos', image: 'assets/p-arandanos.jpg',       emoji: '🫐', name: 'Arándanos',          cat: 'frutas', unit: '125 g',  price: 99 },
   { id: 'cereza', image: 'assets/p-cereza.jpg',          emoji: '🍒', name: 'Cereza',             cat: 'frutas', unit: '200 g',  price: 89 },
-  { id: 'moras', emoji: '🫐', name: 'Moras', cat: 'frutas', unit: '250 g', price: 129 },
+  { id: 'moras', emoji: '🫐', name: 'Moras', cat: 'frutas', unit: '125 g', price: 129 },
   { id: 'almendra-tostada-sal', emoji: '🌰', name: 'Almendra Tostada con Sal', cat: 'frutos-secos', unit: '100 g', price: 108 },
   { id: 'nueces-claras', emoji: '🌰', name: 'Nueces ¼ Claras', cat: 'frutos-secos', unit: '100 g', price: 78 },
   { id: 'mani-tostado-sal', emoji: '🥜', name: 'Maní Tostado con Sal', cat: 'frutos-secos', unit: '100 g', price: 27 },
