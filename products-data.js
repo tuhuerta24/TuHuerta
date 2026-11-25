@@ -46,7 +46,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'moras', image: 'assets/p-moras.jpg', emoji: '🫐', name: 'Moras', cat: 'frutas', unit: '130 g', price: 129 },
   { id: 'almendra-tostada-sal', image: 'assets/p-almendra-tostada-sal.jpg', emoji: '🌰', name: 'Almendra Tostada con Sal', cat: 'frutos-secos', unit: '100 g', price: 108 },
   { id: 'nueces-claras', image: 'assets/p-nueces-claras.jpg', emoji: '🌰', name: 'Nueces ¼ Claras', cat: 'frutos-secos', unit: '100 g', price: 78 },
-  { id: 'mani-tostado-sal', emoji: '🥜', name: 'Maní Tostado con Sal', cat: 'frutos-secos', unit: '100 g', price: 27 },
+  { id: 'mani-tostado-sal', image: 'assets/p-mani-tostado-sal.jpg', emoji: '🥜', name: 'Maní Tostado con Sal', cat: 'frutos-secos', unit: '100 g', price: 27 },
   { id: 'banana-chips', image: 'assets/p-banana-chips.jpg', emoji: '🍌', name: 'Banana Chips', cat: 'frutos-secos', unit: '100 g', price: 52 },
   { id: 'castana-caju-sal', image: 'assets/p-castana-caju-sal.jpg', emoji: '🌰', name: 'Castaña de Cajú Tostada con Sal', cat: 'frutos-secos', unit: '100 g', price: 109 },
   { id: 'pasas-uva', image: 'assets/p-pasas-uva.jpg', emoji: '🍇', name: 'Pasas de Uva', cat: 'frutos-secos', unit: '100 g', price: 34 },
