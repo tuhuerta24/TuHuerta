@@ -48,7 +48,7 @@ const DEFAULT_PRODUCTS = [
   { id: 'nueces-claras', image: 'assets/p-nueces-claras.jpg', emoji: '🌰', name: 'Nueces ¼ Claras', cat: 'frutos-secos', unit: '100 g', price: 78 },
   { id: 'mani-tostado-sal', image: 'assets/p-mani-tostado-sal.jpg', emoji: '🥜', name: 'Maní Tostado con Sal', cat: 'frutos-secos', unit: '100 g', price: 27 },
   { id: 'banana-chips', image: 'assets/p-banana-chips.jpg', emoji: '🍌', name: 'Banana Chips', cat: 'frutos-secos', unit: '100 g', price: 52 },
-  { id: 'castana-caju-sal', image: 'assets/p-castana-caju-sal.jpg', emoji: '🌰', name: 'Castaña de Cajú Tostada con Sal', cat: 'frutos-secos', unit: '100 g', price: 109 },
+  { id: 'castana-caju-sal', image: 'assets/p-castana-caju-sal2.jpg', emoji: '🌰', name: 'Castaña de Cajú Tostada con Sal', cat: 'frutos-secos', unit: '100 g', price: 109 },
   { id: 'pasas-uva', image: 'assets/p-pasas-uva.jpg', emoji: '🍇', name: 'Pasas de Uva', cat: 'frutos-secos', unit: '100 g', price: 34 },
   { id: 'semillas-zapallo', image: 'assets/p-semillas-zapallo.jpg', emoji: '🎃', name: 'Semillas de Zapallo', cat: 'frutos-secos', unit: '100 g', price: 75 },
   { id: 'melon', image: 'assets/p-melon.jpg',           emoji: '🍈', name: 'Melón',              cat: 'frutas', unit: 'kg',     price: 229 },
